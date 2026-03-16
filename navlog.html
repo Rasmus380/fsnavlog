@@ -1420,6 +1420,16 @@ function recalcFuel() {
   renderMBTable();
 }
 
+function updateLeg(i, field, value) {
+  let num = +value;
+  if (field === 'tt') {
+    num = Math.max(0, Math.min(360, num));
+  }
+  state.legs[i][field] = num;
+  clearTimeout(window.recalcTimer);
+  window.recalcTimer = setTimeout(recalcRoute, 500);
+}
+
 // ─── ROUTE TABLE ──────────────────────────────────────────────────────
 function getCruiseSettings() {
   const m = state.cruiseMode;
@@ -1462,7 +1472,8 @@ function renderRouteTable() {
     wpRow.innerHTML = `
       <td style="color:var(--text-faint);font-size:10px;padding:6px 8px">WP${i+1}</td>
       <td><input class="wp-name" type="text" value="${wp.name}" oninput="state.waypoints[${i}].name=this.value"></td>
-      <td colspan="21" style="background:var(--surface2);border:none"></td>
+      <td colspan="20" style="background:var(--surface2);border:none"></td>
+      <td style="background:var(--surface2);border:none;vertical-align:bottom;"><button onclick="removeWaypoint(${i})" style="background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;padding:0;margin:0;">×</button></td>
     `;
     tbody.appendChild(wpRow);
 
@@ -1492,16 +1503,16 @@ function renderRouteTable() {
         <td style="color:var(--text-dim);font-size:10px;padding:6px 8px">Leg ${i+1}</td>
         <td style="background:var(--surface2);border:none"></td>
         <td><input type="text" value="${leg.alt}" style="width:60px" oninput="state.legs[${i}].alt=this.value"></td>
-        <td><input type="number" value="${leg.wdir}" style="width:45px" oninput="state.legs[${i}].wdir=+this.value;recalcRoute()"></td>
-        <td><input type="number" value="${leg.wspd}" style="width:45px" oninput="state.legs[${i}].wspd=+this.value;recalcRoute()"></td>
+        <td><input type="number" value="${leg.wdir}" style="width:45px" oninput="updateLeg(${i}, 'wdir', this.value)"></td>
+        <td><input type="number" value="${leg.wspd}" style="width:45px" oninput="updateLeg(${i}, 'wspd', this.value)"></td>
         <td>${cs.tas}</td>
         <td class="computed-cell">${gs}</td>
-        <td><input type="number" value="${tt}" style="width:45px" oninput="state.legs[${i}].tt=+this.value;recalcRoute()"></td>
+        <td><input type="number" value="${tt}" style="width:45px" oninput="updateLeg(${i}, 'tt', this.value)"></td>
         <td>${cs.var}</td>
         <td class="computed-cell">${mt.toFixed(0).padStart(3,'0')}</td>
         <td class="computed-cell">${wca >= 0 ? '+' : ''}${wca}</td>
         <td class="computed-cell">${mh.toFixed(0).padStart(3,'0')}</td>
-        <td><input type="number" value="${dist}" step="0.5" style="width:50px" oninput="state.legs[${i}].dist=+this.value;recalcRoute()"></td>
+        <td><input type="number" value="${dist}" step="0.5" style="width:50px" oninput="updateLeg(${i}, 'dist', this.value)"></td>
         <td class="computed-cell">${distTot.toFixed(1)}</td>
         <td class="computed-cell">${eteStr}</td>
         <td><input type="text" value="${leg.eto}" style="width:50px" oninput="state.legs[${i}].eto=this.value"></td>
