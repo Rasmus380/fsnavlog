@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NavLog Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  /* ─── DESIGN SYSTEM ─────────────────────────────────────────────── */
+  :root {
+    --bg:        #0d1117;
+    --surface:   #161b22;
+    --surface2:  #1e2530;
+    --border:    #2a3444;
+    --border2:   #3d4f66;
+    --amber:     #e8a020;
+    --amber-dim: #9b6a14;
+    --green:     #3fb950;
+    --green-dim: #1e5c28;
+    --red:       #e05252;
+    --blue:      #58a6ff;
+    --text:      #cdd9e5;
+    --text-dim:  #768490;
+    --text-faint:#3d4f66;
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Barlow Condensed', sans-serif;
+    --body:      'Barlow', sans-serif;
+    --radius:    4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ────────────────────────────────────────────────────── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px 14px 0;
+    border-right: 1px solid var(--border);
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--amber);
+  }
+
+  .brand-name {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+  }
+
+  .brand-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: -2px;
+  }
+
+  /* ─── FLIGHT HEADER STRIP ───────────────────────────────────────── */
+  .flight-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .strip-field {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 20px;
+    border-right: 1px solid var(--border);
+  }
+
+  .strip-field:last-child { border-right: none; }
+
+  .strip-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .strip-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--amber);
+    letter-spacing: 1px;
+  }
+
+  /* editable header fields */
+  .strip-value input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .strip-value input:focus {
+    border-bottom: 1px solid var(--amber-dim);
+  }
+
+  /* ─── TABS ──────────────────────────────────────────────────────── */
+  .tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 0 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--text); }
+
+  .tab.active {
+    color: var(--amber);
+    border-bottom-color: var(--amber);
+  }
+
+  /* ─── MAIN CONTENT ──────────────────────────────────────────────── */
+  main {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── SECTION CARDS ─────────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .card-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .card-body { padding: 16px; }
+
+  /* ─── TWO / THREE COLUMN LAYOUTS ───────────────────────────────── */
+  .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  @media (max-width: 900px) {
+    .col-2, .col-3 { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FORM FIELDS ───────────────────────────────────────────────── */
+  .field { margin-bottom: 12px; }
+
+  .field-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .field-input, .field-select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    transition: border-color .15s;
+    appearance: none;
+  }
+
+  .field-input:focus, .field-select:focus { border-color: var(--amber-dim); }
+
+  .field-input.computed {
+    color: var(--amber);
+    background: #1a1200;
+    border-color: var(--amber-dim);
+    cursor: default;
+  }
+
+  .field-input.warn { color: var(--red); background: #1a0a0a; border-color: #5c2020; }
+  .field-input.ok   { color: var(--green); background: #0a1a0a; border-color: var(--green-dim); }
+
+  /* ─── M&B TABLE ─────────────────────────────────────────────────── */
+  .mb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .mb-table th {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 600;
+    text-align: right;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .mb-table th:first-child { text-align: left; }
+
+  .mb-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border2);
+    text-align: right;
+    color: var(--text);
+  }
+
+  .mb-table td:first-child { text-align: left; color: var(--text-dim); }
+
+  .mb-table tr.subtotal td {
+    border-top: 1px solid var(--border2);
+    color: var(--amber);
+    font-weight: bold;
+  }
+
+  .mb-table tr.total td {
+    border-top: 2px solid var(--amber-dim);
+    color: var(--amber);
+    background: #1a1200;
+  }
+
+  .mb-table input[type="number"], .mb-table input[type="text"] {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: right;
+    width: 80px;
+    padding: 2px 4px;
+  }
+
+  .waypoint-row { background: var(--surface); }
+  .leg-row { background: var(--surface2); }
+
+  /* ─── ENVELOPE DIAGRAM ──────────────────────────────────────────── */
+  .envelope-wrap {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .envelope-wrap canvas { max-width: 100%; }
+
+  .envelope-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .legend-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* ─── FUEL CALC ─────────────────────────────────────────────────── */
+  .fuel-phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .fuel-phase {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+  }
+
+  .fuel-phase-name {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+
+  .fuel-phase-val {
+    font-family: var(--mono);
+    font-size: 20px;
+    color: var(--amber);
+  }
+
+  .fuel-phase-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .fuel-phase.required { border-color: var(--amber-dim); }
+  .fuel-phase.ok       { border-color: var(--green-dim); }
+
+  /* ─── PERFORMANCE CARDS ─────────────────────────────────────────── */
+  .perf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .perf-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+
+  .perf-card-title {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .perf-card-title svg { flex-shrink: 0; }
+
+  .perf-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .perf-row:last-child { border-bottom: none; }
+  .perf-row-label { color: var(--text-dim); }
+  .perf-row-val { color: var(--text); }
+  .perf-row-val.highlight { color: var(--amber); }
+
+  /* ─── ROUTE TABLE ───────────────────────────────────────────────── */
+  .route-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .route-table th {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 600;
+    text-align: right;
+    padding: 8px 8px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    background: var(--surface2);
+  }
+
+  .route-table th:first-child,
+  .route-table th:nth-child(2) { text-align: left; }
+
+  .route-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--border2);
+    text-align: right;
+    color: var(--text);
+  }
+
+  .route-table td:first-child { text-align: left; color: var(--text-dim); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+  .route-table td:nth-child(2) { text-align: left; }
+
+  .route-table input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+    outline: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: right;
+    padding: 2px 4px;
+    width: 100%;
+    min-width: 40px;
+  }
+
+  .route-table input.wp-name {
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: 80px;
+  }
+
+  .route-table input:focus {
+    border-bottom-color: var(--amber-dim);
+    color: var(--amber);
+  }
+
+  .route-table td.computed-cell { color: var(--amber); background: #0d0d00; }
+  .route-table td.dep-arr { background: var(--surface2); color: var(--text-dim); font-size: 10px; letter-spacing: 2px; }
+
+  .route-table tr:hover td { background: rgba(232,160,32,.04); }
+
+  .add-wp-btn {
+    margin-top: 10px;
+    background: transparent;
+    border: 1px dashed var(--border2);
+    border-radius: var(--radius);
+    color: var(--text-dim);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all .15s;
+    width: 100%;
+  }
+
+  .add-wp-btn:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+  /* ─── CRUISE SETTINGS (TURBOPROP EXTRA) ────────────────────────── */
+  .cruise-mode-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .mode-btn {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .mode-btn.active { background: var(--amber); border-color: var(--amber); color: #000; }
+
+  .cruise-section { display: none; }
+  .cruise-section.active { display: block; }
+
+  .torque-note {
+    background: #0d1a0d;
+    border: 1px solid var(--green-dim);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  /* ─── AIRCRAFT REGISTRY ─────────────────────────────────────────── */
+  .ac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .ac-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+    position: relative;
+  }
+
+  .ac-card:hover { border-color: var(--amber-dim); }
+
+  .ac-card.selected {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 1px var(--amber);
+  }
+
+  .ac-card-header {
+    background: var(--surface2);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ac-reg {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--amber);
+    letter-spacing: 2px;
+  }
+
+  .ac-type-badge {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  .badge-piston { background: #1a1200; color: var(--amber); border: 1px solid var(--amber-dim); }
+  .badge-turboprop { background: #0d1a0d; color: var(--green); border: 1px solid var(--green-dim); }
+
+  .ac-card-body { padding: 12px 14px; }
+
+  .ac-spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .ac-spec-row:last-child { border-bottom: none; }
+  .ac-spec-label { color: var(--text-faint); }
+  .ac-spec-val { color: var(--text); }
+
+  .ac-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-sm {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .btn-primary {
+    background: var(--amber);
+    border: 1px solid var(--amber);
+    color: #000;
+  }
+
+  .btn-primary:hover { background: #ffb830; }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text-dim);
+  }
+
+  .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .btn-danger {
+    background: transparent;
+    border: 1px solid #5c2020;
+    color: var(--red);
+    margin-left: auto;
+  }
+
+  .btn-danger:hover { background: #1a0a0a; }
+
+  /* new aircraft form */
+  .ac-form-wrap {
+    background: var(--surface);
+    border: 1px solid var(--amber-dim);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .ac-form-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 16px;
+  }
+
+  .ac-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .ac-type-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .type-opt {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+  }
+
+  .type-opt-name {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .type-opt-desc {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+  }
+
+  .type-opt[data-engine="piston"].selected { border-color: var(--amber); background: #1a1200; }
+  .type-opt[data-engine="piston"].selected .type-opt-name { color: var(--amber); }
+  .type-opt[data-engine="turboprop"].selected { border-color: var(--green); background: #0d1a0d; }
+  .type-opt[data-engine="turboprop"].selected .type-opt-name { color: var(--green); }
+
+  /* turboprop-specific fields */
+  .tp-fields { display: none; }
+  .tp-fields.show { display: contents; }
+
+  /* ─── DIVIDER ───────────────────────────────────────────────────── */
+  .section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  /* ─── UTIL ──────────────────────────────────────────────────────── */
+  .badge-ok  { background: var(--green-dim); color: var(--green); padding: 2px 8px; border-radius: 2px; font-size: 10px; font-family: var(--mono); letter-spacing: 1px; }
+  .badge-warn{ background: #3d1a00;         color: var(--amber); padding: 2px 8px; border-radius: 2px; font-size: 10px; font-family: var(--mono); letter-spacing: 1px; }
+  .badge-err { background: #3d0000;         color: var(--red);   padding: 2px 8px; border-radius: 2px; font-size: 10px; font-family: var(--mono); letter-spacing: 1px; }
+
+  .inline-flex { display: flex; align-items: center; gap: 8px; }
+
+  select option { background: var(--surface); }
+
+  /* small airplane icon pulse on active flight */
+  @keyframes plane-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .4; }
+  }
+
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: plane-pulse 2s ease-in-out infinite;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════════════════════ -->
+<header>
+  <div class="brand">
+    <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M21 12l-8-8-1.5 6-4-1.5L3 12l4.5 3.5-1.5 6L14 20l7-8z"/>
+    </svg>
+    <div>
+      <div class="brand-name">NavLog</div>
+      <div class="brand-sub">Flight Planning</div>
+    </div>
+  </div>
+
+  <div class="flight-strip">
+    <div class="strip-field">
+      <div class="strip-label">Date</div>
+      <div class="strip-value"><input type="date" id="hdr-date" value="2017-07-24"></div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">Aircraft</div>
+      <div class="strip-value"><input type="text" id="hdr-ac" value="C172N3 · SE-LZM" style="width:130px"></div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">DEP</div>
+      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase"></div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">DEST</div>
+      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase"></div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">PIC</div>
+      <div class="strip-value"><input type="text" id="hdr-pic" value="MY NAME" style="width:120px"></div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">Status</div>
+      <div class="strip-value inline-flex"><div class="live-dot"></div><span style="color:var(--green);font-size:11px">PLANNED</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TABS
+════════════════════════════════════════════════════════════════════ -->
+<div class="tabs">
+  <div class="tab active" data-tab="mb">Mass &amp; Balance</div>
+  <div class="tab" data-tab="route">Route / NavLog</div>
+  <div class="tab" data-tab="aircraft">Aircraft Registry</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TAB 1 — MASS & BALANCE
+════════════════════════════════════════════════════════════════════ -->
+<main>
+<div class="tab-panel active" id="tab-mb">
+  <div class="col-2">
+
+    <!-- LEFT — M&B table -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Mass &amp; Balance</div>
+          <span id="mb-status-badge" class="badge-ok">WITHIN LIMITS</span>
+        </div>
+        <div class="card-body" style="padding:0">
+          <table class="mb-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Mass (kg)</th>
+                <th>Arm (in)</th>
+                <th>Moment</th>
+              </tr>
+            </thead>
+            <tbody id="mb-tbody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FUEL CALCULATION -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Fuel Calculation</div></div>
+        <div class="card-body">
+          <div class="fuel-phases" id="fuel-phases">
+            <!-- populated by JS -->
+          </div>
+          <hr class="section-rule">
+          <div class="col-2" style="gap:10px">
+            <div class="field">
+              <label class="field-label">Fuel Onboard (USG)</label>
+              <input class="field-input" id="fuel-onboard" type="number" value="50" step="1" oninput="recalcFuel()">
+            </div>
+            <div class="field">
+              <label class="field-label">Fuel Density (kg/USG)</label>
+              <input class="field-input" id="fuel-density" type="number" value="2.725" step="0.001" oninput="recalcFuel()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — CG envelope + performance -->
+    <div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">CG Envelope</div></div>
+        <div class="card-body" style="padding:8px">
+          <div class="envelope-wrap">
+            <canvas id="cgCanvas" width="380" height="260"></canvas>
+            <div class="envelope-legend">
+              <span><span class="legend-dot" style="background:var(--amber)"></span>Take-Off</span>
+              <span><span class="legend-dot" style="background:var(--green)"></span>Landing</span>
+              <span><span class="legend-dot" style="background:var(--border2)"></span>Envelope</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Performance</div></div>
+        <div class="card-body">
+          <div class="perf-grid">
+            <div class="perf-card">
+              <div class="perf-card-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M5 19l14-14M19 5H9M19 5v10"/></svg>
+                Take-Off
+              </div>
+              <div class="perf-row"><span class="perf-row-label">TOD (actual)</span><span class="perf-row-val highlight" id="tod-actual">1 745 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">TODR (×1.25)</span><span class="perf-row-val highlight" id="todr">2 182 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">TODA available</span><span class="perf-row-val" id="toda">—</span></div>
+              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
+            </div>
+            <div class="perf-card">
+              <div class="perf-card-title">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M19 5L5 19M5 19h10M5 19v-10"/></svg>
+                Landing
+              </div>
+              <div class="perf-row"><span class="perf-row-label">LD (actual)</span><span class="perf-row-val highlight" id="ld-actual">1 310 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">LDR (×1.43)</span><span class="perf-row-val highlight" id="ldr">1 874 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">LDA available</span><span class="perf-row-val" id="lda">—</span></div>
+              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
+              <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-2 -->
+</div><!-- /tab-mb -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TAB 2 — ROUTE / NAVLOG
+════════════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-route">
+
+  <!-- Cruise settings -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header"><div class="card-title">Cruise Settings</div></div>
+    <div class="card-body">
+
+      <div class="cruise-mode-toggle">
+        <button class="mode-btn active" id="mode-piston" onclick="setCruiseMode('piston')">Piston</button>
+        <button class="mode-btn" id="mode-turboprop" onclick="setCruiseMode('turboprop')">Turboprop</button>
+      </div>
+
+      <!-- PISTON -->
+      <div class="cruise-section active" id="piston-settings">
+        <div class="col-3" style="gap:10px">
+          <div class="field">
+            <label class="field-label">Power Setting (RPM)</label>
+            <input class="field-input" id="p-rpm" type="number" value="2200" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Cruise Altitude (ft)</label>
+            <input class="field-input" id="p-alt" type="number" value="2200" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">TAS (kts)</label>
+            <input class="field-input" id="p-tas" type="number" value="112" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Fuel Flow (USG/hr)</label>
+            <input class="field-input" id="p-ff" type="number" value="8.06" step="0.01" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Variation (°)</label>
+            <input class="field-input" id="p-var" type="number" value="5" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Wind Dir / Speed</label>
+            <div style="display:flex;gap:6px">
+              <input class="field-input" id="p-wdir" type="number" value="070" style="width:60px" placeholder="Dir" oninput="recalcRoute()">
+              <input class="field-input" id="p-wspd" type="number" value="17" style="width:60px" placeholder="Kts" oninput="recalcRoute()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TURBOPROP -->
+      <div class="cruise-section" id="turboprop-settings">
+        <div class="torque-note">
+          ✦ Turboprop power is set by <strong>torque (%Tq)</strong> and <strong>ITT</strong>, not RPM. Propeller speed
+          (NP) stays at the governing RPM; power is controlled by the power lever via fuel flow through the
+          fuel control unit. Note ITT limits for climb vs cruise phases.
+        </div>
+        <div class="col-3" style="gap:10px">
+          <div class="field">
+            <label class="field-label">Torque (% Tq)</label>
+            <input class="field-input" id="tp-torque" type="number" value="75" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">ITT (°C)</label>
+            <input class="field-input" id="tp-itt" type="number" value="760" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">NP (RPM)</label>
+            <input class="field-input" id="tp-np" type="number" value="1900" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Cruise Altitude (ft)</label>
+            <input class="field-input" id="tp-alt" type="number" value="10000" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">TAS (kts)</label>
+            <input class="field-input" id="tp-tas" type="number" value="180" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Fuel Flow (kg/hr)</label>
+            <input class="field-input" id="tp-ff" type="number" value="170" step="1" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Variation (°)</label>
+            <input class="field-input" id="tp-var" type="number" value="5" oninput="recalcRoute()">
+          </div>
+          <div class="field">
+            <label class="field-label">Wind Dir / Speed</label>
+            <div style="display:flex;gap:6px">
+              <input class="field-input" id="tp-wdir" type="number" value="070" style="width:60px" placeholder="Dir" oninput="recalcRoute()">
+              <input class="field-input" id="tp-wspd" type="number" value="17" style="width:60px" placeholder="Kts" oninput="recalcRoute()">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Route table -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Route Waypoints</div>
+      <div style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--text-dim)">
+        ETE: <span id="total-ete" style="color:var(--amber)">00:44</span> &nbsp;|&nbsp;
+        Fuel: <span id="total-fuel-used" style="color:var(--amber)">6.2</span> kg
+      </div>
+    </div>
+    <div class="card-body" style="padding:0;overflow-x:auto">
+      <table class="route-table" id="route-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Waypoint</th>
+            <th>Alt</th>
+            <th>W/Dir</th>
+            <th>W/Kts</th>
+            <th>TAS</th>
+            <th>GS</th>
+            <th>TT</th>
+            <th>Var</th>
+            <th>MT</th>
+            <th>WCA</th>
+            <th>MH</th>
+            <th>Dist (nm)</th>
+            <th>Dist TOT</th>
+            <th>ETE</th>
+            <th>ETO</th>
+            <th>ATO</th>
+            <th>DIF</th>
+            <th>RETO</th>
+            <th>Fuel</th>
+            <th>Fuel ACT</th>
+            <th>Fuel REM</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="route-tbody">
+          <!-- populated by JS -->
+        </tbody>
+      </table>
+      <button class="add-wp-btn" onclick="addWaypoint()">+ Add Waypoint</button>
+    </div>
+  </div>
+</div><!-- /tab-route -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     TAB 3 — AIRCRAFT REGISTRY
+════════════════════════════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-aircraft">
+
+  <!-- New aircraft form -->
+  <div class="ac-form-wrap" id="new-ac-form" style="display:none">
+    <div class="ac-form-title" id="ac-form-title">Add New Aircraft</div>
+
+    <label class="field-label" style="margin-bottom:8px">Engine Type</label>
+    <div class="ac-type-selector">
+      <div class="type-opt selected" data-engine="piston" onclick="selectEngineType('piston')">
+        <div class="type-opt-name" style="color:var(--amber)">Piston</div>
+        <div class="type-opt-desc">RPM power setting<br>Fuel: litres/hr</div>
+      </div>
+      <div class="type-opt" data-engine="turboprop" onclick="selectEngineType('turboprop')">
+        <div class="type-opt-name">Turboprop</div>
+        <div class="type-opt-desc">Torque / ITT / NP<br>Fuel: kg/hr</div>
+      </div>
+    </div>
+
+    <div class="ac-form-grid">
+      <div class="field">
+        <label class="field-label">Registration</label>
+        <input class="field-input" id="ac-reg" type="text" placeholder="SE-LZM" style="text-transform:uppercase">
+      </div>
+      <div class="field">
+        <label class="field-label">Type</label>
+        <input class="field-input" id="ac-type" type="text" placeholder="C172N3">
+      </div>
+      <div class="field">
+        <label class="field-label">BEM (kg)</label>
+        <input class="field-input" id="ac-bem" type="number" placeholder="788.8">
+      </div>
+      <div class="field">
+        <label class="field-label">BEM Arm (in)</label>
+        <input class="field-input" id="ac-bem-arm" type="number" placeholder="103.8">
+      </div>
+      <div class="field">
+        <label class="field-label">MTOM (kg)</label>
+        <input class="field-input" id="ac-mtom" type="number" placeholder="1111">
+      </div>
+      <div class="field">
+        <label class="field-label">MLM (kg)</label>
+        <input class="field-input" id="ac-mlm" type="number" placeholder="1111">
+      </div>
+      <div class="field">
+        <label class="field-label">Fuel Arm (in)</label>
+        <input class="field-input" id="ac-fuel-arm" type="number" placeholder="121.9">
+      </div>
+      <div class="field">
+        <label class="field-label">CG Fwd Limit (in)</label>
+        <input class="field-input" id="ac-cg-fwd" type="number" placeholder="95.0">
+      </div>
+      <div class="field">
+        <label class="field-label">CG Aft Limit (in)</label>
+        <input class="field-input" id="ac-cg-aft" type="number" placeholder="108.0">
+      </div>
+      <!-- Piston only -->
+      <div class="field tp-fields" data-engine="piston">
+        <label class="field-label">Cruise RPM</label>
+        <input class="field-input" id="ac-rpm" type="number" placeholder="2200">
+      </div>
+      <div class="field tp-fields" data-engine="piston">
+        <label class="field-label">Cruise TAS (kts)</label>
+        <input class="field-input" id="ac-tas-p" type="number" placeholder="112">
+      </div>
+      <div class="field tp-fields" data-engine="piston">
+        <label class="field-label">Fuel Flow (L/hr)</label>
+        <input class="field-input" id="ac-ff-p" type="number" placeholder="30.5">
+      </div>
+      <!-- Turboprop only -->
+      <div class="field tp-fields" data-engine="turboprop" style="display:none">
+        <label class="field-label">Cruise Torque (%)</label>
+        <input class="field-input" id="ac-torque" type="number" placeholder="75">
+      </div>
+      <div class="field tp-fields" data-engine="turboprop" style="display:none">
+        <label class="field-label">Cruise TAS (kts)</label>
+        <input class="field-input" id="ac-tas-tp" type="number" placeholder="180">
+      </div>
+      <div class="field tp-fields" data-engine="turboprop" style="display:none">
+        <label class="field-label">Fuel Flow (kg/hr)</label>
+        <input class="field-input" id="ac-ff-tp" type="number" placeholder="170">
+      </div>
+      <div class="field tp-fields" data-engine="turboprop" style="display:none">
+        <label class="field-label">Max ITT (°C)</label>
+        <input class="field-input" id="ac-itt" type="number" placeholder="820">
+      </div>
+      <div class="field tp-fields" data-engine="turboprop" style="display:none">
+        <label class="field-label">NP Gov (RPM)</label>
+        <input class="field-input" id="ac-np" type="number" placeholder="1900">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn-sm btn-primary" onclick="saveAircraft()">Save Aircraft</button>
+      <button class="btn-sm btn-ghost" onclick="cancelAcForm()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Aircraft grid -->
+  <div class="ac-grid" id="ac-grid">
+    <!-- populated by JS -->
+  </div>
+
+  <button class="add-wp-btn" onclick="showAcForm()">+ Add Aircraft</button>
+
+</div><!-- /tab-aircraft -->
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════════════ -->
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────
+const state = {
+  cruiseMode: 'piston',
+  selectedAc: null,
+  editingAcId: null,
+  aircraft: [
+    { id: 1, reg: 'SE-LZD', type: 'C172',   engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.06 },
+    { id: 2, reg: 'SE-LZE', type: 'C172N3', engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.06 },
+    { id: 3, reg: 'SE-LZF', type: 'C172R',  engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.1 },
+    { id: 4, reg: 'SE-LZI', type: 'C208B',  engine:'turboprop', bem:2145,  bemArm:122.0, mtom:3629, mlm:3629, fuelArm:128.0, cgFwd:110, cgAft:130, torque:75, tas:180, ff:170, maxItt:820, np:1900 },
+  ],
+  mbItems: [
+    { label: 'BEM',        mass: 788.8, arm: 103.8, editable: false },
+    { label: '+ Pilots',   mass: 112,   arm: 94,    editable: true  },
+    { label: '+ Pax',      mass: 0,     arm: 185.4, editable: true  },
+    { label: '+ Baggage 1',mass: 5,     arm: 241.3, editable: true  },
+    { label: '+ Baggage 2',mass: 0,     arm: 312.4, editable: true  },
+  ],
+  fuelOnboard: 50,  // US gallons
+  fuelDensity: 2.725,
+  waypoints: [
+    { name:'WP01', altType:'FL', alt:1500 },
+    { name:'WP02', altType:'FL', alt:1500 },
+    { name:'WP03', altType:'FL', alt:1500 },
+    { name:'WP04', altType:'FL', alt:1500 },
+    { name:'WP05', altType:'FL', alt:1500 },
+    { name:'WP06', altType:'FL', alt:1500 },
+    { name:'WP07', altType:'FL', alt:1500 },
+    { name:'WP08', altType:'FL', alt:1500 },
+    { name:'WP09', altType:'FL', alt:1500 },
+    { name:'DEST', altType:'DESC', alt:null },
+  ],
+  legs: [
+    { wdir:70, wspd:17, tt:115, dist:11, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt: 96, dist:2.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:168, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt: 94, dist:6, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:135, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt: 17, dist:3.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:343, dist:16.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:242, dist:7.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:315, dist:5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+  ],
+};
+
+// ─── TABS ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── MASS & BALANCE ───────────────────────────────────────────────────
+function renderMBTable() {
+  const tbody = document.getElementById('mb-tbody');
+  tbody.innerHTML = '';
+
+  const fuelMass = state.fuelOnboard * state.fuelDensity;
+  let zfmMass = 0, zfmMom = 0;
+  state.mbItems.forEach(item => { zfmMass += item.mass; zfmMom += item.mass * item.arm; });
+  const zfmArm = zfmMom / zfmMass;
+
+  const tomMass = zfmMass + fuelMass;
+  const tomMom  = zfmMom  + fuelMass * state.fuelArm;
+  const tomArm  = tomMom / tomMass;
+
+  const tripFuel   = parseFloat(document.getElementById('p-ff')?.value || 30.5) *
+                     parseFloat(document.getElementById('total-ete')?.textContent.split(':')[0] || 0.73);
+  const tripFuelMass = tripFuel * state.fuelDensity;
+  const lmMass = tomMass - tripFuelMass;
+  const lmMom  = tomMom  - tripFuelMass * state.fuelArm;
+  const lmArm  = lmMom / lmMass;
+
+  state.tomArm = tomArm; state.tomMass = tomMass;
+  state.lmArm  = lmArm;  state.lmMass  = lmMass;
+  state.fuelArm = 121.9;
+
+  // rows
+  state.mbItems.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    const moment = (item.mass * item.arm).toFixed(0);
+    tr.innerHTML = `
+      <td>${item.label}</td>
+      <td>${item.editable
+        ? `<input type="number" value="${item.mass}" step="0.1" oninput="updateMBItem(${i}, this.value)">`
+        : item.mass.toFixed(1)}</td>
+      <td>${item.arm.toFixed(1)}</td>
+      <td>${moment}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  // ZFM
+  appendMBRow(tbody, '= ZFM', zfmMass, zfmArm, zfmMom, 'subtotal');
+  // Fuel
+  appendMBRow(tbody, '+ Fuel', fuelMass, 121.9, fuelMass*121.9, '');
+  // TOM
+  appendMBRow(tbody, '= TOM', tomMass, tomArm, tomMom, 'total');
+  // Trip fuel
+  appendMBRow(tbody, '− Trip Fuel', -tripFuelMass, 121.9, -tripFuelMass*121.9, '');
+  // LM
+  appendMBRow(tbody, '= LM', lmMass, lmArm, lmMom, 'total');
+
+  updateMBStatus(tomMass, tomArm, lmMass, lmArm);
+  drawCGEnvelope();
+}
+
+function appendMBRow(tbody, label, mass, arm, moment, cls) {
+  const tr = document.createElement('tr');
+  if (cls) tr.className = cls;
+  tr.innerHTML = `<td>${label}</td><td>${Math.abs(mass).toFixed(1)}</td><td>${arm.toFixed(1)}</td><td>${Math.abs(moment).toFixed(0)}</td>`;
+  tbody.appendChild(tr);
+}
+
+function updateMBItem(i, val) {
+  state.mbItems[i].mass = parseFloat(val) || 0;
+  renderMBTable();
+}
+
+function updateMBStatus(tomMass, tomArm, lmMass, lmArm) {
+  const cgFwd = 95, cgAft = 108, mtom = 1111;
+  const ok = tomMass <= mtom && lmMass <= mtom &&
+             tomArm >= cgFwd && tomArm <= cgAft &&
+             lmArm  >= cgFwd && lmArm  <= cgAft;
+  const badge = document.getElementById('mb-status-badge');
+  badge.className = ok ? 'badge-ok' : 'badge-err';
+  badge.textContent = ok ? 'WITHIN LIMITS' : 'OUT OF LIMITS';
+}
+
+// ─── CG ENVELOPE CANVAS ──────────────────────────────────────────────
+function drawCGEnvelope() {
+  const canvas = document.getElementById('cgCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // C172 envelope approximation (mass kg vs arm in)
+  const envelope = [
+    {mass:680, arm:95},  {mass:680, arm:108},
+    {mass:1111,arm:108}, {mass:1111,arm:98},
+    {mass:950, arm:95},  {mass:680, arm:95},
+  ];
+
+  const massMin=600, massMax=1200, armMin=88, armMax=115;
+
+  function toX(arm)  { return 40 + (arm  - armMin)  / (armMax  - armMin)  * (W - 55); }
+  function toY(mass) { return H - 30 - (mass - massMin) / (massMax - massMin) * (H - 50); }
+
+  // grid
+  ctx.strokeStyle = '#2a3444';
+  ctx.lineWidth = 1;
+  for (let m = 600; m <= 1200; m += 100) {
+    ctx.beginPath(); ctx.moveTo(40, toY(m)); ctx.lineTo(W-10, toY(m)); ctx.stroke();
+    ctx.fillStyle='#3d4f66'; ctx.font='9px Share Tech Mono';
+    ctx.fillText(m + 'kg', 0, toY(m)+4);
+  }
+  for (let a = 90; a <= 114; a += 4) {
+    ctx.beginPath(); ctx.moveTo(toX(a), 5); ctx.lineTo(toX(a), H-25); ctx.stroke();
+    ctx.fillStyle='#3d4f66'; ctx.font='9px Share Tech Mono';
+    ctx.fillText(a, toX(a)-6, H-12);
+  }
+
+  // envelope fill
+  ctx.beginPath();
+  envelope.forEach((p,i) => i===0 ? ctx.moveTo(toX(p.arm),toY(p.mass)) : ctx.lineTo(toX(p.arm),toY(p.mass)));
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(58,169,80,.07)';
+  ctx.fill();
+  ctx.strokeStyle = '#3d4f66';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // plot TOM
+  const tx = toX(state.tomArm), ty = toY(state.tomMass);
+  ctx.beginPath(); ctx.arc(tx,ty,6,0,Math.PI*2);
+  ctx.fillStyle='#e8a020'; ctx.fill();
+  ctx.fillStyle='#e8a020'; ctx.font='bold 10px Share Tech Mono';
+  ctx.fillText('TOM',tx+9,ty+4);
+
+  // plot LM
+  if (state.lmArm) {
+    const lx = toX(state.lmArm), ly = toY(state.lmMass);
+    ctx.beginPath(); ctx.arc(lx,ly,6,0,Math.PI*2);
+    ctx.fillStyle='#3fb950'; ctx.fill();
+    ctx.fillStyle='#3fb950'; ctx.font='bold 10px Share Tech Mono';
+    ctx.fillText('LM',lx+9,ly+4);
+
+    // line between
+    ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(lx,ly);
+    ctx.strokeStyle='rgba(200,200,200,.25)'; ctx.lineWidth=1; ctx.setLineDash([3,4]); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// ─── FUEL PHASES ─────────────────────────────────────────────────────
+function renderFuelPhases() {
+  const ff    = parseFloat(document.getElementById('p-ff')?.value || 8.06);  // USG/hr
+  const fuelOnboard = parseFloat(document.getElementById('fuel-onboard').value);
+  const density    = parseFloat(document.getElementById('fuel-density').value);
+
+  // Calculate trip fuel from legs
+  const cs = getCruiseSettings();
+  const trip = state.legs.reduce((s, leg) => {
+    const gs = calcGS(leg.tt || 0, leg.wdir, leg.wspd, cs.tas);
+    return s + (gs > 0 ? (leg.dist / gs * 60) * (ff / 60) * density : 0);
+  }, 0);
+
+  const rr    = trip * 0.10;
+  const final = 9.0 * density; // 1hr final reserve in kg
+  const taxi  = 1.1 * density;
+  const min   = trip + rr + final + taxi;
+  const extra = Math.max(0, fuelOnboard * density - min);
+
+  const phases = [
+    { name: 'Trip',         val: trip.toFixed(1),        sub: 'kg',     cls: '' },
+    { name: 'Route Res 10%',val: rr.toFixed(1),          sub: 'kg',     cls: '' },
+    { name: 'Final (1 hr)', val: final.toFixed(1),       sub: 'kg',     cls: '' },
+    { name: 'Taxi',         val: taxi.toFixed(1),        sub: 'kg',     cls: '' },
+    { name: 'Min Required', val: min.toFixed(1),         sub: 'kg',     cls: 'required' },
+    { name: 'Onboard',      val: (fuelOnboard*density).toFixed(1), sub:'kg', cls: fuelOnboard*density >= min ? 'ok' : 'required' },
+    { name: 'Extra',        val: extra.toFixed(1),       sub: 'kg',     cls: extra >= 0 ? 'ok' : 'required' },
+  ];
+
+  const wrap = document.getElementById('fuel-phases');
+  wrap.innerHTML = phases.map(p => `
+    <div class="fuel-phase ${p.cls}">
+      <div class="fuel-phase-name">${p.name}</div>
+      <div class="fuel-phase-val">${p.val}</div>
+      <div class="fuel-phase-sub">${p.sub}</div>
+    </div>`).join('');
+}
+
+function recalcFuel() {
+  state.fuelOnboard = parseFloat(document.getElementById('fuel-onboard').value);
+  state.fuelDensity = parseFloat(document.getElementById('fuel-density').value);
+  renderFuelPhases();
+  renderMBTable();
+}
+
+// ─── ROUTE TABLE ──────────────────────────────────────────────────────
+function getCruiseSettings() {
+  const m = state.cruiseMode;
+  const pfx = m === 'piston' ? 'p' : 'tp';
+  const tas = parseFloat(document.getElementById(`${pfx}-tas`).value) || 112;
+  const ff  = parseFloat(document.getElementById(`${pfx}-ff` ).value) || 30.5;
+  const wdir= parseFloat(document.getElementById(`${pfx}-wdir`).value) || 0;
+  const wspd= parseFloat(document.getElementById(`${pfx}-wspd`).value) || 0;
+  const varr= parseFloat(document.getElementById(`${pfx}-var` ).value) || 0;
+  return { tas, ff, wdir, wspd, var: varr };
+}
+
+function calcWCA(tt, wdir, wspd, tas) {
+  // WCA formula: sin(WCA) = (WS * sin(wind_angle)) / TAS
+  const wa = (wdir - tt + 360) % 360;
+  const waRad = wa * Math.PI / 180;
+  const sinWCA = (wspd * Math.sin(waRad)) / tas;
+  const wca = Math.asin(Math.max(-1, Math.min(1, sinWCA))) * 180 / Math.PI;
+  return Math.round(wca);
+}
+
+function calcGS(tt, wdir, wspd, tas) {
+  const mh = tt + calcWCA(tt, wdir, wspd, tas);
+  const wa = (wdir - mh + 360) % 360;
+  const waRad = wa * Math.PI / 180;
+  return Math.round(tas - wspd * Math.cos(waRad));
+}
+
+function renderRouteTable() {
+  const tbody = document.getElementById('route-tbody');
+  tbody.innerHTML = '';
+  const cs = getCruiseSettings();
+  let distTot=0, eteTot=0, fuelUsed = parseFloat(document.getElementById('fuel-onboard').value) * parseFloat(document.getElementById('fuel-density').value);
+  const ffPerMin = cs.ff / 60;
+
+  state.waypoints.forEach((wp, i) => {
+    // Waypoint row
+    const wpRow = document.createElement('tr');
+    wpRow.classList.add('waypoint-row');
+    wpRow.innerHTML = `
+      <td style="color:var(--text-faint);font-size:10px;padding:6px 8px">WP${i+1}</td>
+      <td><input class="wp-name" type="text" value="${wp.name}" oninput="state.waypoints[${i}].name=this.value"></td>
+      <td>
+        <select style="width:55px;font-size:11px" onchange="state.waypoints[${i}].altType=this.value">
+          <option value="CLIMB" ${wp.altType==='CLIMB'?'selected':''}>CLIMB</option>
+          <option value="FL" ${wp.altType==='FL'?'selected':''}>FL</option>
+          <option value="DESC" ${wp.altType==='DESC'?'selected':''}>DESC</option>
+        </select>
+        <input type="number" value="${wp.alt ?? ''}" placeholder="Alt" style="width:45px;margin-left:2px" oninput="state.waypoints[${i}].alt=this.value||null">
+      </td>
+      <td colspan="20" style="background:var(--surface2);border:none"></td>
+    `;
+    tbody.appendChild(wpRow);
+
+    // Leg row (if not the last waypoint)
+    if (i < state.legs.length) {
+      const leg = state.legs[i];
+      const tt = leg.tt || 0;
+      const dist = leg.dist || 0;
+      const mt = ((tt - cs.var) + 360) % 360;
+      const wca = calcWCA(tt, leg.wdir, leg.wspd, cs.tas);
+      const mh = Math.round(((mt + wca) + 360) % 360);
+      const gs = calcGS(tt, leg.wdir, leg.wspd, cs.tas);
+      const ete = gs > 0 ? (dist / gs * 60) : 0;
+      const fuel = ete * ffPerMin * parseFloat(document.getElementById('fuel-density').value);
+
+      distTot += dist;
+      eteTot += ete;
+      fuelUsed -= fuel;
+
+      const etoH = Math.floor(eteTot/60).toString().padStart(2,'0');
+      const etoM = Math.round(eteTot%60).toString().padStart(2,'0');
+      const eteStr = `${Math.floor(ete).toString().padStart(2,'0')}:${Math.round((ete%1)*60).toString().padStart(2,'0')}`;
+
+      const legRow = document.createElement('tr');
+      legRow.classList.add('leg-row');
+      legRow.innerHTML = `
+        <td style="color:var(--text-dim);font-size:10px;padding:6px 8px">Leg ${i+1}</td>
+        <td colspan="2" style="background:var(--surface2);border:none"></td>
+        <td><input type="number" value="${leg.wdir}" style="width:45px" oninput="state.legs[${i}].wdir=+this.value;recalcRoute()"></td>
+        <td><input type="number" value="${leg.wspd}" style="width:45px" oninput="state.legs[${i}].wspd=+this.value;recalcRoute()"></td>
+        <td>${cs.tas}</td>
+        <td class="computed-cell">${gs}</td>
+        <td><input type="number" value="${tt}" style="width:45px" oninput="state.legs[${i}].tt=+this.value;recalcRoute()"></td>
+        <td>${cs.var}</td>
+        <td class="computed-cell">${mt.toFixed(0).padStart(3,'0')}</td>
+        <td class="computed-cell">${wca >= 0 ? '+' : ''}${wca}</td>
+        <td class="computed-cell">${mh.toFixed(0).padStart(3,'0')}</td>
+        <td><input type="number" value="${dist}" step="0.5" style="width:50px" oninput="state.legs[${i}].dist=+this.value;recalcRoute()"></td>
+        <td class="computed-cell">${distTot.toFixed(1)}</td>
+        <td class="computed-cell">${eteStr}</td>
+        <td><input type="text" value="${leg.eto}" style="width:50px" oninput="state.legs[${i}].eto=this.value"></td>
+        <td><input type="text" value="${leg.ato}" style="width:50px" oninput="state.legs[${i}].ato=this.value"></td>
+        <td><input type="text" value="${leg.dif}" style="width:50px" oninput="state.legs[${i}].dif=this.value"></td>
+        <td><input type="text" value="${leg.reto}" style="width:50px" oninput="state.legs[${i}].reto=this.value"></td>
+        <td class="computed-cell">${fuel.toFixed(1)}</td>
+        <td><input type="number" value="${leg.fuelAct}" step="0.1" style="width:50px" oninput="state.legs[${i}].fuelAct=+this.value"></td>
+        <td class="computed-cell">${Math.max(0,fuelUsed).toFixed(1)}</td>
+        <td></td>
+      `;
+      tbody.appendChild(legRow);
+    }
+  });
+
+  // totals
+  const totalH = Math.floor(eteTot/60).toString().padStart(2,'0');
+  const totalM = Math.round(eteTot%60).toString().padStart(2,'0');
+  document.getElementById('total-ete').textContent = `${totalH}:${totalM}`;
+  document.getElementById('total-fuel-used').textContent = (state.legs.reduce((s,leg) => {
+    const gs = calcGS(leg.tt||0, leg.wdir, leg.wspd, cs.tas);
+    return s + (gs > 0 ? (leg.dist/gs*60)*(cs.ff/60)*parseFloat(document.getElementById('fuel-density').value) : 0);
+  }, 0)).toFixed(1);
+}
+
+function recalcRoute() { renderRouteTable(); renderMBTable(); }
+
+function addWaypoint() {
+  const i = state.waypoints.length;
+  state.waypoints.push({ name: `WP${String(i+1).padStart(2,'0')}`, altType:'FL', alt:1500 });
+  state.legs.push({ wdir:70, wspd:17, tt:0, dist:0, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' });
+  renderRouteTable();
+}
+
+function removeWaypoint(i) {
+  state.waypoints.splice(i, 1);
+  if (i < state.legs.length) state.legs.splice(i, 1);
+  renderRouteTable();
+}
+
+// ─── CRUISE MODE TOGGLE ───────────────────────────────────────────────
+function setCruiseMode(mode) {
+  state.cruiseMode = mode;
+  document.getElementById('mode-piston').classList.toggle('active', mode==='piston');
+  document.getElementById('mode-turboprop').classList.toggle('active', mode==='turboprop');
+  document.getElementById('piston-settings').classList.toggle('active', mode==='piston');
+  document.getElementById('turboprop-settings').classList.toggle('active', mode==='turboprop');
+  recalcRoute();
+}
+
+// ─── AIRCRAFT REGISTRY ───────────────────────────────────────────────
+let selectedEngineType = 'piston';
+
+function selectEngineType(engine) {
+  selectedEngineType = engine;
+  document.querySelectorAll('.type-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.engine === engine);
+  });
+  // show/hide piston fields
+  document.querySelectorAll('.tp-fields[data-engine="piston"]').forEach(el => {
+    el.style.display = engine === 'piston' ? '' : 'none';
+  });
+  // show/hide turboprop fields
+  document.querySelectorAll('.tp-fields[data-engine="turboprop"]').forEach(el => {
+    el.style.display = engine === 'turboprop' ? '' : 'none';
+  });
+}
+
+function renderAcGrid() {
+  const grid = document.getElementById('ac-grid');
+  grid.innerHTML = '';
+  state.aircraft.forEach(ac => {
+    const isPiston = ac.engine === 'piston';
+    const badgeCls = isPiston ? 'badge-piston' : 'badge-turboprop';
+    const badgeTxt = isPiston ? 'PISTON' : 'TURBOPROP';
+
+    const specs = isPiston
+      ? `<div class="ac-spec-row"><span class="ac-spec-label">Cruise RPM</span><span class="ac-spec-val">${ac.rpm || '—'}</span></div>
+         <div class="ac-spec-row"><span class="ac-spec-label">TAS</span><span class="ac-spec-val">${ac.tas || '—'} kts</span></div>
+         <div class="ac-spec-row"><span class="ac-spec-label">Fuel Flow</span><span class="ac-spec-val">${ac.ff || '—'} USG/hr</span></div>`
+      : `<div class="ac-spec-row"><span class="ac-spec-label">Cruise Torque</span><span class="ac-spec-val">${ac.torque || '—'}% Tq</span></div>
+         <div class="ac-spec-row"><span class="ac-spec-label">TAS</span><span class="ac-spec-val">${ac.tas || '—'} kts</span></div>
+         <div class="ac-spec-row"><span class="ac-spec-label">Fuel Flow</span><span class="ac-spec-val">${ac.ff || '—'} kg/hr</span></div>
+         <div class="ac-spec-row"><span class="ac-spec-label">Max ITT</span><span class="ac-spec-val">${ac.maxItt || '—'} °C</span></div>`;
+
+    const div = document.createElement('div');
+    div.className = 'ac-card' + (state.selectedAc === ac.id ? ' selected' : '');
+    div.innerHTML = `
+      <div class="ac-card-header">
+        <div class="ac-reg">${ac.reg}</div>
+        <span class="ac-type-badge ${badgeCls}">${badgeTxt}</span>
+      </div>
+      <div class="ac-card-body">
+        <div class="ac-spec-row"><span class="ac-spec-label">Type</span><span class="ac-spec-val">${ac.type}</span></div>
+        <div class="ac-spec-row"><span class="ac-spec-label">BEM</span><span class="ac-spec-val">${ac.bem} kg @ ${ac.bemArm} in</span></div>
+        <div class="ac-spec-row"><span class="ac-spec-label">MTOM</span><span class="ac-spec-val">${ac.mtom} kg</span></div>
+        <div class="ac-spec-row"><span class="ac-spec-label">CG Limits</span><span class="ac-spec-val">${ac.cgFwd}–${ac.cgAft} in</span></div>
+        ${specs}
+      </div>
+      <div class="ac-actions">
+        <button class="btn-sm btn-primary" onclick="selectAcForFlight(${ac.id})">Use for Flight</button>
+        <button class="btn-sm btn-ghost" onclick="editAc(${ac.id})">Edit</button>
+        <button class="btn-sm btn-danger" onclick="deleteAc(${ac.id})">Delete</button>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+function showAcForm() {
+  state.editingAcId = null;
+  document.getElementById('ac-form-title').textContent = 'Add New Aircraft';
+  clearAcForm();
+  document.getElementById('new-ac-form').style.display = 'block';
+  selectEngineType('piston');
+}
+
+function cancelAcForm() { document.getElementById('new-ac-form').style.display = 'none'; }
+
+function clearAcForm() {
+  ['ac-reg','ac-type','ac-bem','ac-bem-arm','ac-mtom','ac-mlm','ac-fuel-arm',
+   'ac-cg-fwd','ac-cg-aft','ac-rpm','ac-tas-p','ac-ff-p','ac-torque','ac-tas-tp',
+   'ac-ff-tp','ac-itt','ac-np'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function editAc(id) {
+  const ac = state.aircraft.find(a => a.id === id);
+  if (!ac) return;
+  state.editingAcId = id;
+  document.getElementById('ac-form-title').textContent = `Edit ${ac.reg}`;
+  selectEngineType(ac.engine);
+  document.getElementById('ac-reg').value       = ac.reg;
+  document.getElementById('ac-type').value      = ac.type;
+  document.getElementById('ac-bem').value       = ac.bem;
+  document.getElementById('ac-bem-arm').value   = ac.bemArm;
+  document.getElementById('ac-mtom').value      = ac.mtom;
+  document.getElementById('ac-mlm').value       = ac.mlm;
+  document.getElementById('ac-fuel-arm').value  = ac.fuelArm;
+  document.getElementById('ac-cg-fwd').value    = ac.cgFwd;
+  document.getElementById('ac-cg-aft').value    = ac.cgAft;
+  if (ac.engine === 'piston') {
+    document.getElementById('ac-rpm').value   = ac.rpm   || '';
+    document.getElementById('ac-tas-p').value = ac.tas   || '';
+    document.getElementById('ac-ff-p').value  = ac.ff    || '';
+  } else {
+    document.getElementById('ac-torque').value = ac.torque  || '';
+    document.getElementById('ac-tas-tp').value = ac.tas     || '';
+    document.getElementById('ac-ff-tp').value  = ac.ff      || '';
+    document.getElementById('ac-itt').value    = ac.maxItt  || '';
+    document.getElementById('ac-np').value     = ac.np      || '';
+  }
+  document.getElementById('new-ac-form').style.display = 'block';
+}
+
+function saveAircraft() {
+  const isPiston = selectedEngineType === 'piston';
+  const ac = {
+    id:      state.editingAcId || Date.now(),
+    engine:  selectedEngineType,
+    reg:     document.getElementById('ac-reg').value.toUpperCase(),
+    type:    document.getElementById('ac-type').value,
+    bem:     parseFloat(document.getElementById('ac-bem').value)     || 0,
+    bemArm:  parseFloat(document.getElementById('ac-bem-arm').value) || 0,
+    mtom:    parseFloat(document.getElementById('ac-mtom').value)    || 0,
+    mlm:     parseFloat(document.getElementById('ac-mlm').value)     || 0,
+    fuelArm: parseFloat(document.getElementById('ac-fuel-arm').value)|| 0,
+    cgFwd:   parseFloat(document.getElementById('ac-cg-fwd').value)  || 0,
+    cgAft:   parseFloat(document.getElementById('ac-cg-aft').value)  || 0,
+  };
+  if (isPiston) {
+    ac.rpm = parseFloat(document.getElementById('ac-rpm').value)   || 0;
+    ac.tas = parseFloat(document.getElementById('ac-tas-p').value) || 0;
+    ac.ff  = parseFloat(document.getElementById('ac-ff-p').value)  || 0;
+  } else {
+    ac.torque = parseFloat(document.getElementById('ac-torque').value) || 0;
+    ac.tas    = parseFloat(document.getElementById('ac-tas-tp').value) || 0;
+    ac.ff     = parseFloat(document.getElementById('ac-ff-tp').value)  || 0;
+    ac.maxItt = parseFloat(document.getElementById('ac-itt').value)    || 0;
+    ac.np     = parseFloat(document.getElementById('ac-np').value)     || 0;
+  }
+  if (state.editingAcId) {
+    const idx = state.aircraft.findIndex(a => a.id === state.editingAcId);
+    if (idx !== -1) state.aircraft[idx] = ac;
+  } else {
+    state.aircraft.push(ac);
+  }
+  cancelAcForm();
+  renderAcGrid();
+}
+
+function deleteAc(id) {
+  state.aircraft = state.aircraft.filter(a => a.id !== id);
+  if (state.selectedAc === id) state.selectedAc = null;
+  renderAcGrid();
+}
+
+function selectAcForFlight(id) {
+  const ac = state.aircraft.find(a => a.id === id);
+  if (!ac) return;
+  state.selectedAc = id;
+
+  // populate header
+  document.getElementById('hdr-ac').value = `${ac.type} · ${ac.reg}`;
+
+  // set M&B BEM
+  state.mbItems[0].mass = ac.bem;
+  state.mbItems[0].arm  = ac.bemArm;
+  state.fuelArm = ac.fuelArm || 121.9;
+
+  // set cruise settings based on engine type
+  if (ac.engine === 'piston') {
+    setCruiseMode('piston');
+    if (ac.rpm) document.getElementById('p-rpm').value = ac.rpm;
+    if (ac.tas) document.getElementById('p-tas').value = ac.tas;
+    if (ac.ff)  document.getElementById('p-ff').value  = ac.ff;
+  } else {
+    setCruiseMode('turboprop');
+    if (ac.torque) document.getElementById('tp-torque').value = ac.torque;
+    if (ac.tas)    document.getElementById('tp-tas').value    = ac.tas;
+    if (ac.ff)     document.getElementById('tp-ff').value     = ac.ff;
+    if (ac.maxItt) document.getElementById('tp-itt').value    = ac.maxItt;
+    if (ac.np)     document.getElementById('tp-np').value     = ac.np;
+  }
+
+  renderMBTable();
+  recalcRoute();
+  renderAcGrid();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+renderMBTable();
+renderFuelPhases();
+renderRouteTable();
+renderAcGrid();
+</script>
+</body>
+</html>
