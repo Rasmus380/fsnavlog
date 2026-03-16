@@ -1212,15 +1212,15 @@ const state = {
     { name:'DEST', altType:'DESC', alt:null },
   ],
   legs: [
-    { wdir:70, wspd:17, tt:115, dist:11, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt: 96, dist:2.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt:168, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt: 94, dist:6, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt:135, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt: 17, dist:3.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt:343, dist:16.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt:242, dist:7.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
-    { wdir:70, wspd:17, tt:315, dist:5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' },
+    { wdir:70, wspd:17, tt:115, dist:11, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt: 96, dist:2.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:168, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt: 94, dist:6, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:135, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt: 17, dist:3.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:343, dist:16.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:242, dist:7.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:315, dist:5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
   ],
 };
 
@@ -1462,15 +1462,7 @@ function renderRouteTable() {
     wpRow.innerHTML = `
       <td style="color:var(--text-faint);font-size:10px;padding:6px 8px">WP${i+1}</td>
       <td><input class="wp-name" type="text" value="${wp.name}" oninput="state.waypoints[${i}].name=this.value"></td>
-      <td>
-        <select style="width:55px;font-size:11px" onchange="state.waypoints[${i}].altType=this.value">
-          <option value="CLIMB" ${wp.altType==='CLIMB'?'selected':''}>CLIMB</option>
-          <option value="FL" ${wp.altType==='FL'?'selected':''}>FL</option>
-          <option value="DESC" ${wp.altType==='DESC'?'selected':''}>DESC</option>
-        </select>
-        <input type="number" value="${wp.alt ?? ''}" placeholder="Alt" style="width:45px;margin-left:2px" oninput="state.waypoints[${i}].alt=this.value||null">
-      </td>
-      <td colspan="20" style="background:var(--surface2);border:none"></td>
+      <td colspan="21" style="background:var(--surface2);border:none"></td>
     `;
     tbody.appendChild(wpRow);
 
@@ -1498,7 +1490,8 @@ function renderRouteTable() {
       legRow.classList.add('leg-row');
       legRow.innerHTML = `
         <td style="color:var(--text-dim);font-size:10px;padding:6px 8px">Leg ${i+1}</td>
-        <td colspan="2" style="background:var(--surface2);border:none"></td>
+        <td style="background:var(--surface2);border:none"></td>
+        <td><input type="text" value="${leg.alt}" style="width:60px" oninput="state.legs[${i}].alt=this.value"></td>
         <td><input type="number" value="${leg.wdir}" style="width:45px" oninput="state.legs[${i}].wdir=+this.value;recalcRoute()"></td>
         <td><input type="number" value="${leg.wspd}" style="width:45px" oninput="state.legs[${i}].wspd=+this.value;recalcRoute()"></td>
         <td>${cs.tas}</td>
@@ -1539,7 +1532,7 @@ function recalcRoute() { renderRouteTable(); renderMBTable(); }
 function addWaypoint() {
   const i = state.waypoints.length;
   state.waypoints.push({ name: `WP${String(i+1).padStart(2,'0')}`, altType:'FL', alt:1500 });
-  state.legs.push({ wdir:70, wspd:17, tt:0, dist:0, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00' });
+  state.legs.push({ wdir:70, wspd:17, tt:0, dist:0, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' });
   renderRouteTable();
 }
 
