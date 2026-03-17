@@ -444,7 +444,7 @@
     color: var(--text-faint);
     font-weight: 600;
     text-align: right;
-    padding: 8px 8px;
+    padding: 5px 5px;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
     background: var(--surface2);
@@ -453,8 +453,50 @@
   .route-table th:first-child,
   .route-table th:nth-child(2) { text-align: left; }
 
+  /* Group header row */
+  .rt-group-row { background: var(--bg); }
+
+  /* Override general th rules for group cells — needs higher specificity */
+  .route-table .rt-group-row th.rt-group {
+    text-align: center !important;
+    padding: 5px 4px 3px;
+    border-bottom: 1px solid var(--border2);
+    background: var(--bg);
+    font-weight: 700;
+    letter-spacing: 3px;
+  }
+
+  .rt-group-div {
+    border-left: 2px solid var(--border2);
+  }
+
+  /* Right-side divider — used after the last Fuel col (ACT) */
+  .rt-div-right {
+    border-right: 2px solid var(--border2) !important;
+  }
+
+  /* Individual column label row */
+  .rt-col-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    font-weight: 600;
+    text-align: center;
+    padding: 5px 5px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    background: var(--surface2);
+  }
+
+  /* Category divider on data cells — applied to first col of each group */
+  .rt-div { border-left: 2px solid var(--border2) !important; }
+
+  .route-table td.rt-div { border-left: 2px solid var(--border2); }
+
   .route-table td {
-    padding: 7px 8px;
+    padding: 5px 5px;
     border-bottom: 1px solid var(--border2);
     text-align: right;
     color: var(--text);
@@ -466,16 +508,21 @@
   .route-table input {
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--border2);
     outline: none;
     color: var(--text);
     font-family: var(--mono);
     font-size: 12px;
     text-align: right;
-    padding: 2px 4px;
+    padding: 2px 3px;
     width: 100%;
-    min-width: 40px;
+    min-width: 44px;
+    box-sizing: border-box;
   }
+
+  /* Ensure numeric columns have enough room for 3 digits */
+  .route-table td { min-width: 44px; }
+  .route-table td:first-child { min-width: 56px; }
+  .route-table td:nth-child(2) { min-width: 72px; }
 
   .route-table input.wp-name {
     text-align: left;
@@ -493,6 +540,9 @@
   .route-table td.dep-arr { background: var(--surface2); color: var(--text-dim); font-size: 10px; letter-spacing: 2px; }
 
   .route-table tr:hover td { background: rgba(232,160,32,.04); }
+
+  /* Waypoint name rows and DEP/ARR rows — no bottom border, clean separator look */
+  .route-table tr.waypoint-row td { border-bottom: none; }
 
   .add-wp-btn {
     margin-top: 10px;
@@ -758,6 +808,77 @@
     animation: plane-pulse 2s ease-in-out infinite;
   }
 
+  /* ─── CRUISE SETTINGS TILES ────────────────────────────────────── */
+  .cs-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    min-width: 120px;
+  }
+
+  .cs-tile:last-child { border-right: none; }
+  .cs-tile-last { border-right: none; }
+  .cs-tile-wide { min-width: 160px; }
+
+  /* Second row: wind/variation — slightly dimmer background */
+  .cs-tile-secondary {
+    background: var(--surface2);
+    border-bottom: none;
+  }
+
+  .cs-input-sm {
+    font-size: 15px;
+  }
+
+  .cs-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .cs-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border2);
+    outline: none;
+    color: var(--amber);
+    font-family: var(--mono);
+    font-size: 18px;
+    padding: 2px 0;
+    width: 100%;
+    transition: border-color .15s;
+  }
+
+  .cs-input:focus { border-bottom-color: var(--amber); }
+
+  /* remove spinner arrows from cs-inputs */
+  .cs-input::-webkit-outer-spin-button,
+  .cs-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .cs-input[type=number] { -moz-appearance: textfield; }
+
+  /* also move toggle inside header */
+  .cruise-mode-toggle { margin-bottom: 0; }
+
+  /* ─── FLIGHT TIMES ──────────────────────────────────────────────── */
+  .ft-cell { display:flex; flex-direction:column; gap:3px; }
+  .ft-label { font-family:var(--mono); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-faint); }
+  .ft-input { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); font-family:var(--mono); font-size:13px; padding:5px 8px; outline:none; transition:border-color .15s; width:100%; }
+  .ft-input:focus { border-color:var(--amber-dim); color:var(--amber); }
+  .ft-computed { font-family:var(--mono); font-size:15px; color:var(--amber); padding:4px 0; }
+
+  /* ─── FREQUENCY TABLES ──────────────────────────────────────────── */
+  .freq-table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px; }
+  .freq-table th { font-family:var(--sans); font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--text-faint); font-weight:600; text-align:left; padding:7px 12px; border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
+  .freq-table td { padding:6px 8px; border-bottom:1px solid var(--border2); }
+  .freq-table tr:last-child td { border-bottom:none; }
+  .freq-input { background:transparent; border:none; border-bottom:1px solid var(--border2); outline:none; color:var(--text); font-family:var(--mono); font-size:12px; padding:2px 4px; width:100%; min-width:60px; transition:border-color .15s, color .15s; }
+  .freq-input:focus { border-bottom-color:var(--amber-dim); color:var(--amber); }
+
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -792,11 +913,11 @@
     </div>
     <div class="strip-field">
       <div class="strip-label">DEP</div>
-      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase"></div>
+      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">DEST</div>
-      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase"></div>
+      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">PIC</div>
@@ -926,96 +1047,154 @@
 ════════════════════════════════════════════════════════════════════ -->
 <div class="tab-panel" id="tab-route">
 
-  <!-- Cruise settings -->
-  <div class="card" style="margin-bottom:16px">
-    <div class="card-header"><div class="card-title">Cruise Settings</div></div>
-    <div class="card-body">
+  <!-- ── TOP INFO STRIP: Notes/Clearance · Flight Times · Frequencies · QNH ── -->
 
-      <div class="cruise-mode-toggle">
+  <!-- ROW 1: Notes & Clearance (tall, left) + Flight Times & Totals (right) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;align-items:stretch">
+
+    <!-- Notes & Clearance — stretches to match right column height -->
+    <div class="card" style="display:flex;flex-direction:column">
+      <div class="card-header"><div class="card-title">Notes &amp; Clearance</div></div>
+      <div class="card-body" style="flex:1;display:flex;flex-direction:column;padding:10px">
+        <textarea id="notes-clearance"
+          style="flex:1;resize:none;font-family:var(--mono);font-size:12px;line-height:1.7;width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 10px;outline:none;min-height:160px;transition:border-color .15s"
+          onfocus="this.style.borderColor='var(--amber-dim)'" onblur="this.style.borderColor='var(--border)'"
+          placeholder="SID / clearance / ATC instructions / route amendments…"></textarea>
+      </div>
+    </div>
+
+    <!-- RIGHT column: Flight Times + Frequencies stacked -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+
+      <!-- Flight Times & Totals -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Flight Times &amp; Totals</div></div>
+        <div class="card-body" style="padding:12px 14px">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px">
+            <div class="ft-cell"><div class="ft-label">Tach Out</div><input class="ft-input" type="text" id="ft-tach-out" placeholder="—"></div>
+            <div class="ft-cell"><div class="ft-label">Tach In</div><input class="ft-input" type="text" id="ft-tach-in" placeholder="—"></div>
+            <div class="ft-cell"><div class="ft-label">Block Off</div><input class="ft-input" type="text" id="ft-block-off" placeholder="00:00"></div>
+            <div class="ft-cell"><div class="ft-label">Take Off</div><input class="ft-input" type="text" id="ft-takeoff" placeholder="00:00"></div>
+            <div class="ft-cell"><div class="ft-label">Landing</div><input class="ft-input" type="text" id="ft-landing" placeholder="00:00"></div>
+            <div class="ft-cell"><div class="ft-label">Block On</div><input class="ft-input" type="text" id="ft-block-on" placeholder="00:00"></div>
+            <div class="ft-cell"><div class="ft-label">Block A/B</div><input class="ft-input" type="text" id="ft-block-ab" placeholder="00:00" style="color:var(--amber)"></div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div class="ft-cell"><div class="ft-label">Total Fuel Onboard</div><div class="ft-computed" id="ft-total-fuel">—</div></div>
+            <div class="ft-cell"><div class="ft-label">Total Dist (nm)</div><div class="ft-computed" id="ft-total-dist">—</div></div>
+            <div class="ft-cell"><div class="ft-label">Total ETE</div><div class="ft-computed" id="ft-total-ete-disp">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Frequencies + QNH/TA in one row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+
+        <!-- AD Frequencies -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">Freq — AD</div></div>
+          <div class="card-body" style="padding:0;overflow-x:auto">
+            <table class="freq-table">
+              <thead><tr><th>AD</th><th>TWR</th><th>ATIS</th></tr></thead>
+              <tbody id="freq-ad-tbody">
+                <tr>
+                  <td><input type="text" placeholder="DEP" class="freq-input"></td>
+                  <td><input type="text" placeholder="118.0" class="freq-input"></td>
+                  <td><input type="text" placeholder="126.2" class="freq-input"></td>
+                </tr>
+                <tr>
+                  <td><input type="text" placeholder="DEST" class="freq-input"></td>
+                  <td><input type="text" placeholder="118.0" class="freq-input"></td>
+                  <td><input type="text" placeholder="126.2" class="freq-input"></td>
+                </tr>
+                <tr>
+                  <td><input type="text" placeholder="ALT" class="freq-input"></td>
+                  <td><input type="text" placeholder="118.0" class="freq-input"></td>
+                  <td><input type="text" placeholder="126.2" class="freq-input"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- En-Route Frequencies -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Freq — ENR</div>
+            <button onclick="addEnrFreq()" style="margin-left:auto;background:transparent;border:1px dashed var(--border2);border-radius:var(--radius);color:var(--text-dim);font-family:var(--sans);font-size:14px;line-height:1;padding:2px 10px;cursor:pointer" onmouseover="this.style.borderColor='var(--amber-dim)';this.style.color='var(--amber)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text-dim)'">+</button>
+          </div>
+          <div class="card-body" style="padding:0;overflow-x:auto">
+            <table class="freq-table">
+              <thead><tr><th>Station / FIR</th><th>Freq</th><th></th></tr></thead>
+              <tbody id="freq-enr-tbody">
+                <tr>
+                  <td><input type="text" placeholder="Stockholm Radar" class="freq-input" style="width:100%"></td>
+                  <td><input type="text" placeholder="135.575" class="freq-input"></td>
+                  <td><button onclick="removeFreqRow(this)" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 4px">×</button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" placeholder="FIC / FIS" class="freq-input" style="width:100%"></td>
+                  <td><input type="text" placeholder="126.900" class="freq-input"></td>
+                  <td><button onclick="removeFreqRow(this)" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 4px">×</button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" placeholder="Emergency" class="freq-input" style="width:100%"></td>
+                  <td><input type="text" placeholder="121.500" class="freq-input"></td>
+                  <td><button onclick="removeFreqRow(this)" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 4px">×</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Expected QNH + Transition Altitude -->
+        <div class="card">
+          <div class="card-header"><div class="card-title">QNH &amp; Trans Alt</div></div>
+          <div class="card-body" style="padding:0;overflow-x:auto">
+            <table class="freq-table">
+              <thead><tr><th></th><th>QNH</th><th>Trans Alt</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="color:var(--text-faint);font-family:var(--mono);font-size:10px;letter-spacing:1px">DEP</td>
+                  <td><input type="text" class="freq-input" id="misc-qnh-dep" placeholder="1013"></td>
+                  <td><input type="text" class="freq-input" id="misc-ta-dep" placeholder="6000 ft"></td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-faint);font-family:var(--mono);font-size:10px;letter-spacing:1px">DEST</td>
+                  <td><input type="text" class="freq-input" id="misc-qnh-dest" placeholder="1013"></td>
+                  <td><input type="text" class="freq-input" id="misc-ta-dest" placeholder="6000 ft"></td>
+                </tr>
+                <tr>
+                  <td style="color:var(--text-faint);font-family:var(--mono);font-size:10px;letter-spacing:1px">ALT</td>
+                  <td><input type="text" class="freq-input" id="misc-qnh-alt" placeholder="1013"></td>
+                  <td><input type="text" class="freq-input" id="misc-ta-alt" placeholder="6000 ft"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /3-col freq+qnh -->
+    </div><!-- /right col -->
+  </div><!-- /row 1 -->
+
+  <!-- ── CRUISE SETTINGS ────────────────────────────────────────────── -->
+  <div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+      <div class="card-title">Power Settings</div>
+      <div class="cruise-mode-toggle" style="margin-left:16px;margin-bottom:0">
         <button class="mode-btn active" id="mode-piston" onclick="setCruiseMode('piston')">Piston</button>
         <button class="mode-btn" id="mode-turboprop" onclick="setCruiseMode('turboprop')">Turboprop</button>
       </div>
-
-      <!-- PISTON -->
-      <div class="cruise-section active" id="piston-settings">
-        <div class="col-3" style="gap:10px">
-          <div class="field">
-            <label class="field-label">Power Setting (RPM)</label>
-            <input class="field-input" id="p-rpm" type="number" value="2200" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Cruise Altitude (ft)</label>
-            <input class="field-input" id="p-alt" type="number" value="2200" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">TAS (kts)</label>
-            <input class="field-input" id="p-tas" type="number" value="112" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Fuel Flow (USG/hr)</label>
-            <input class="field-input" id="p-ff" type="number" value="8.06" step="0.01" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Variation (°)</label>
-            <input class="field-input" id="p-var" type="number" value="5" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Wind Dir / Speed</label>
-            <div style="display:flex;gap:6px">
-              <input class="field-input" id="p-wdir" type="number" value="070" style="width:60px" placeholder="Dir" oninput="recalcRoute()">
-              <input class="field-input" id="p-wspd" type="number" value="17" style="width:60px" placeholder="Kts" oninput="recalcRoute()">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TURBOPROP -->
-      <div class="cruise-section" id="turboprop-settings">
-        <div class="torque-note">
-          ✦ Turboprop power is set by <strong>torque (%Tq)</strong> and <strong>ITT</strong>, not RPM. Propeller speed
-          (NP) stays at the governing RPM; power is controlled by the power lever via fuel flow through the
-          fuel control unit. Note ITT limits for climb vs cruise phases.
-        </div>
-        <div class="col-3" style="gap:10px">
-          <div class="field">
-            <label class="field-label">Torque (% Tq)</label>
-            <input class="field-input" id="tp-torque" type="number" value="75" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">ITT (°C)</label>
-            <input class="field-input" id="tp-itt" type="number" value="760" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">NP (RPM)</label>
-            <input class="field-input" id="tp-np" type="number" value="1900" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Cruise Altitude (ft)</label>
-            <input class="field-input" id="tp-alt" type="number" value="10000" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">TAS (kts)</label>
-            <input class="field-input" id="tp-tas" type="number" value="180" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Fuel Flow (kg/hr)</label>
-            <input class="field-input" id="tp-ff" type="number" value="170" step="1" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Variation (°)</label>
-            <input class="field-input" id="tp-var" type="number" value="5" oninput="recalcRoute()">
-          </div>
-          <div class="field">
-            <label class="field-label">Wind Dir / Speed</label>
-            <div style="display:flex;gap:6px">
-              <input class="field-input" id="tp-wdir" type="number" value="070" style="width:60px" placeholder="Dir" oninput="recalcRoute()">
-              <input class="field-input" id="tp-wspd" type="number" value="17" style="width:60px" placeholder="Kts" oninput="recalcRoute()">
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <button onclick="addPowerSetting()" style="margin-left:auto;background:transparent;border:1px dashed var(--border2);border-radius:var(--radius);color:var(--text-dim);font-family:var(--sans);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--amber-dim)';this.style.color='var(--amber)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text-dim)'">+ Add Setting</button>
     </div>
+
+    <!-- Power setting profile tabs -->
+    <div id="ps-tabs" style="display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto"></div>
+
+    <!-- Profile panels rendered here -->
+    <div id="ps-panels" style="padding:0"></div>
+
   </div>
 
   <!-- Route table -->
@@ -1030,30 +1209,45 @@
     <div class="card-body" style="padding:0;overflow-x:auto">
       <table class="route-table" id="route-table">
         <thead>
+          <!-- Row 1: category group labels -->
+          <tr class="rt-group-row">
+            <th colspan="2" class="rt-group"></th>
+            <th colspan="2" class="rt-group rt-group-div">Altitude</th>
+            <th colspan="2" class="rt-group rt-group-div">Wind</th>
+            <th colspan="2" class="rt-group rt-group-div">Speed</th>
+            <th colspan="5" class="rt-group rt-group-div">Course</th>
+            <th colspan="2" class="rt-group rt-group-div">Distance</th>
+            <th colspan="5" class="rt-group rt-group-div">Time</th>
+            <th colspan="4" class="rt-group rt-group-div rt-div-right">Fuel</th>
+            <th class="rt-group"></th>
+          </tr>
+          <!-- Row 2: individual column names -->
           <tr>
-            <th>#</th>
-            <th>Waypoint</th>
-            <th>Alt</th>
-            <th>W/Dir</th>
-            <th>W/Kts</th>
-            <th>TAS</th>
-            <th>GS</th>
-            <th>TT</th>
-            <th>Var</th>
-            <th>MT</th>
-            <th>WCA</th>
-            <th>MH</th>
-            <th>Dist (nm)</th>
-            <th>Dist TOT</th>
-            <th>ETE</th>
-            <th>ETO</th>
-            <th>ATO</th>
-            <th>DIF</th>
-            <th>RETO</th>
-            <th>Fuel</th>
-            <th>Fuel ACT</th>
-            <th>Fuel REM</th>
-            <th></th>
+            <th class="rt-col-label" style="text-align:center">#</th>
+            <th class="rt-col-label" style="text-align:left">Waypoint</th>
+            <th class="rt-col-label rt-div" style="text-align:center">ALT/FL</th>
+            <th class="rt-col-label" style="text-align:center">MA</th>
+            <th class="rt-col-label rt-div" style="text-align:center">DIR</th>
+            <th class="rt-col-label" style="text-align:center">KTS</th>
+            <th class="rt-col-label rt-div" style="text-align:center">TAS</th>
+            <th class="rt-col-label" style="text-align:center">GS</th>
+            <th class="rt-col-label rt-div" style="text-align:center">TT</th>
+            <th class="rt-col-label" style="text-align:center">VAR</th>
+            <th class="rt-col-label" style="text-align:center">MT</th>
+            <th class="rt-col-label" style="text-align:center">WCA</th>
+            <th class="rt-col-label" style="text-align:center">MH</th>
+            <th class="rt-col-label rt-div" style="text-align:center">INT</th>
+            <th class="rt-col-label" style="text-align:center">TOT</th>
+            <th class="rt-col-label rt-div" style="text-align:center">ETE</th>
+            <th class="rt-col-label" style="text-align:center">ETO</th>
+            <th class="rt-col-label" style="text-align:center">ATO</th>
+            <th class="rt-col-label" style="text-align:center">DIF</th>
+            <th class="rt-col-label" style="text-align:center">RETO</th>
+            <th class="rt-col-label rt-div" style="text-align:center">INT</th>
+            <th class="rt-col-label" style="text-align:center">REM</th>
+            <th class="rt-col-label" style="text-align:center">MIN</th>
+            <th class="rt-col-label rt-div-right" style="text-align:center">ACT</th>
+            <th class="rt-col-label"></th>
           </tr>
         </thead>
         <tbody id="route-tbody">
@@ -1063,6 +1257,7 @@
       <button class="add-wp-btn" onclick="addWaypoint()">+ Add Waypoint</button>
     </div>
   </div>
+
 </div><!-- /tab-route -->
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -1182,6 +1377,10 @@
 // ─── STATE ────────────────────────────────────────────────────────────
 const state = {
   cruiseMode: 'piston',
+  activePsIdx: 0,
+  powerSettings: [
+    { label:'Cruise', rpm:2200, alt:2200, tas:112, ff:8.06, torque:75, np:1900, itt:760, wdir:70, wspd:17, variation:5 },
+  ],
   selectedAc: null,
   editingAcId: null,
   aircraft: [
@@ -1199,28 +1398,24 @@ const state = {
   ],
   fuelOnboard: 50,  // US gallons
   fuelDensity: 2.725,
+  // Intermediate waypoints only. DEP and DEST are fixed header/footer rows.
+  // Invariant: legs.length === waypoints.length + 1
   waypoints: [
-    { name:'WP01', altType:'FL', alt:1500 },
-    { name:'WP02', altType:'FL', alt:1500 },
-    { name:'WP03', altType:'FL', alt:1500 },
-    { name:'WP04', altType:'FL', alt:1500 },
-    { name:'WP05', altType:'FL', alt:1500 },
-    { name:'WP06', altType:'FL', alt:1500 },
-    { name:'WP07', altType:'FL', alt:1500 },
-    { name:'WP08', altType:'FL', alt:1500 },
-    { name:'WP09', altType:'FL', alt:1500 },
-    { name:'DEST', altType:'DESC', alt:null },
+    { name:'WP01' },
+    { name:'WP02' },
+    { name:'WP03' },
+    { name:'WP04' },
+    { name:'WP05' },
   ],
+  // legs[i] = segment arriving AT waypoints[i] (or at DEST for the last leg)
+  // legs[0] = DEP → WP01, legs[1] = WP01 → WP02, ..., legs[5] = WP05 → DEST
   legs: [
-    { wdir:70, wspd:17, tt:115, dist:11, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt: 96, dist:2.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt:168, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt: 94, dist:6, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt:135, dist:7, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt: 17, dist:3.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt:343, dist:16.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt:242, dist:7.5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
-    { wdir:70, wspd:17, tt:315, dist:5, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' },
+    { wdir:70, wspd:17, tt:115, dist:11,   tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'1500' },
+    { wdir:70, wspd:17, tt: 96, dist:2.5,  tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'1500' },
+    { wdir:70, wspd:17, tt:168, dist:7,    tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'1500' },
+    { wdir:70, wspd:17, tt: 94, dist:6,    tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'1500' },
+    { wdir:70, wspd:17, tt:135, dist:7,    tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'1500' },
+    { wdir:70, wspd:17, tt:243, dist:5,    tas:112, ma:'', fuelAct:0, eto:'', ato:'', dif:'', reto:'', alt:'DESC' },
   ],
 };
 
@@ -1377,14 +1572,16 @@ function drawCGEnvelope() {
 
 // ─── FUEL PHASES ─────────────────────────────────────────────────────
 function renderFuelPhases() {
-  const ff    = parseFloat(document.getElementById('p-ff')?.value || 8.06);  // USG/hr
+  const ps = state.powerSettings[state.activePsIdx];
+  const ff = ps.ff || 8.06;
   const fuelOnboard = parseFloat(document.getElementById('fuel-onboard').value);
   const density    = parseFloat(document.getElementById('fuel-density').value);
 
   // Calculate trip fuel from legs
   const cs = getCruiseSettings();
   const trip = state.legs.reduce((s, leg) => {
-    const gs = calcGS(leg.tt || 0, leg.wdir, leg.wspd, cs.tas);
+    const legTas = leg.tas || cs.tas;
+    const gs = calcGS(leg.tt || 0, leg.wdir, leg.wspd, legTas);
     return s + (gs > 0 ? (leg.dist / gs * 60) * (ff / 60) * density : 0);
   }, 0);
 
@@ -1430,16 +1627,164 @@ function updateLeg(i, field, value) {
   window.recalcTimer = setTimeout(recalcRoute, 500);
 }
 
+// ─── POWER SETTINGS ───────────────────────────────────────────────────
+function renderPowerSettings() {
+  const mode = state.cruiseMode;
+  const settings = state.powerSettings;
+  const activeIdx = state.activePsIdx;
+
+  // Tabs
+  const tabsEl = document.getElementById('ps-tabs');
+  tabsEl.innerHTML = settings.map((ps, i) => `
+    <div onclick="selectPowerSetting(${i})" style="
+      padding:8px 18px;font-family:var(--sans);font-size:11px;font-weight:600;
+      letter-spacing:2px;text-transform:uppercase;cursor:pointer;white-space:nowrap;
+      border-bottom:2px solid ${i === activeIdx ? 'var(--amber)' : 'transparent'};
+      color:${i === activeIdx ? 'var(--amber)' : 'var(--text-dim)'};
+      border-right:1px solid var(--border);transition:all .15s;
+      display:flex;align-items:center;gap:8px"
+      onmouseover="if(${i}!==state.activePsIdx)this.style.color='var(--text)'"
+      onmouseout="if(${i}!==state.activePsIdx)this.style.color='var(--text-dim)'">
+      <input type="text" value="${ps.label}"
+        onclick="event.stopPropagation()"
+        oninput="state.powerSettings[${i}].label=this.value;document.getElementById('ps-tabs').querySelectorAll('input')[${i}].value=this.value"
+        style="background:transparent;border:none;outline:none;color:inherit;font:inherit;width:${Math.max(50, ps.label.length * 8)}px;cursor:text">
+      ${settings.length > 1 ? `<span onclick="event.stopPropagation();removePowerSetting(${i})"
+        style="font-size:14px;line-height:1;opacity:.4;cursor:pointer"
+        onmouseover="this.style.opacity=1;this.style.color='var(--red)'"
+        onmouseout="this.style.opacity=.4;this.style.color=''">×</span>` : ''}
+    </div>`).join('');
+
+  // Active panel
+  const ps = settings[activeIdx];
+  const panelsEl = document.getElementById('ps-panels');
+
+  if (mode === 'piston') {
+    panelsEl.innerHTML = `
+      <!-- Row 1: power fields -->
+      <div style="display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)">
+        <div class="cs-tile">
+          <div class="cs-label">Power (RPM)</div>
+          <input class="cs-input" type="number" value="${ps.rpm}" oninput="updatePs(${activeIdx},'rpm',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">Altitude (ft)</div>
+          <input class="cs-input" type="number" value="${ps.alt}" oninput="updatePs(${activeIdx},'alt',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">TAS (kts)</div>
+          <input class="cs-input" type="number" value="${ps.tas}" oninput="updatePs(${activeIdx},'tas',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-last">
+          <div class="cs-label">Fuel Flow (USG/hr)</div>
+          <input class="cs-input" type="number" value="${ps.ff}" step="0.01" oninput="updatePs(${activeIdx},'ff',this.value)">
+        </div>
+      </div>
+      <!-- Row 2: wind + variation -->
+      <div style="display:flex;flex-wrap:wrap">
+        <div class="cs-tile cs-tile-secondary">
+          <div class="cs-label">Variation (°)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" oninput="updatePs(${activeIdx},'variation',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-secondary cs-tile-wide">
+          <div class="cs-label">Wind Direction (°)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" oninput="updatePs(${activeIdx},'wdir',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-secondary cs-tile-last">
+          <div class="cs-label">Wind Speed (kts)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" oninput="updatePs(${activeIdx},'wspd',this.value)">
+        </div>
+      </div>`;
+  } else {
+    panelsEl.innerHTML = `
+      <div class="torque-note" style="margin:12px 14px 6px">
+        ✦ Turboprop power is set by <strong>torque (%Tq)</strong> and <strong>ITT</strong>. NP is held by the governor. Observe ITT limits for each phase.
+      </div>
+      <!-- Row 1: power fields -->
+      <div style="display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)">
+        <div class="cs-tile">
+          <div class="cs-label">Torque (% Tq)</div>
+          <input class="cs-input" type="number" value="${ps.torque}" oninput="updatePs(${activeIdx},'torque',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">NP (RPM)</div>
+          <input class="cs-input" type="number" value="${ps.np}" oninput="updatePs(${activeIdx},'np',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">ITT (°C)</div>
+          <input class="cs-input" type="number" value="${ps.itt}" oninput="updatePs(${activeIdx},'itt',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">Altitude (ft)</div>
+          <input class="cs-input" type="number" value="${ps.alt}" oninput="updatePs(${activeIdx},'alt',this.value)">
+        </div>
+        <div class="cs-tile">
+          <div class="cs-label">TAS (kts)</div>
+          <input class="cs-input" type="number" value="${ps.tas}" oninput="updatePs(${activeIdx},'tas',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-last">
+          <div class="cs-label">Fuel Flow (kg/hr)</div>
+          <input class="cs-input" type="number" value="${ps.ff}" step="1" oninput="updatePs(${activeIdx},'ff',this.value)">
+        </div>
+      </div>
+      <!-- Row 2: wind + variation -->
+      <div style="display:flex;flex-wrap:wrap">
+        <div class="cs-tile cs-tile-secondary">
+          <div class="cs-label">Variation (°)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" oninput="updatePs(${activeIdx},'variation',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-secondary cs-tile-wide">
+          <div class="cs-label">Wind Direction (°)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" oninput="updatePs(${activeIdx},'wdir',this.value)">
+        </div>
+        <div class="cs-tile cs-tile-secondary cs-tile-last">
+          <div class="cs-label">Wind Speed (kts)</div>
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" oninput="updatePs(${activeIdx},'wspd',this.value)">
+        </div>
+      </div>`;
+  }
+}
+
+function updatePs(idx, field, value) {
+  state.powerSettings[idx][field] = parseFloat(value) || 0;
+  recalcRoute();
+}
+
+function selectPowerSetting(idx) {
+  state.activePsIdx = idx;
+  renderPowerSettings();
+  recalcRoute();
+}
+
+function addPowerSetting() {
+  const prev = state.powerSettings[state.powerSettings.length - 1];
+  const labels = ['Cruise','Climb','Descent','Alternate','Economy','Max Continuous'];
+  const usedLabels = state.powerSettings.map(p => p.label);
+  const nextLabel = labels.find(l => !usedLabels.includes(l)) || `Setting ${state.powerSettings.length + 1}`;
+  state.powerSettings.push({ ...prev, label: nextLabel });
+  state.activePsIdx = state.powerSettings.length - 1;
+  renderPowerSettings();
+  recalcRoute();
+}
+
+function removePowerSetting(idx) {
+  if (state.powerSettings.length <= 1) return;
+  state.powerSettings.splice(idx, 1);
+  state.activePsIdx = Math.min(state.activePsIdx, state.powerSettings.length - 1);
+  renderPowerSettings();
+  recalcRoute();
+}
+
 // ─── ROUTE TABLE ──────────────────────────────────────────────────────
 function getCruiseSettings() {
-  const m = state.cruiseMode;
-  const pfx = m === 'piston' ? 'p' : 'tp';
-  const tas = parseFloat(document.getElementById(`${pfx}-tas`).value) || 112;
-  const ff  = parseFloat(document.getElementById(`${pfx}-ff` ).value) || 30.5;
-  const wdir= parseFloat(document.getElementById(`${pfx}-wdir`).value) || 0;
-  const wspd= parseFloat(document.getElementById(`${pfx}-wspd`).value) || 0;
-  const varr= parseFloat(document.getElementById(`${pfx}-var` ).value) || 0;
-  return { tas, ff, wdir, wspd, var: varr };
+  const ps = state.powerSettings[state.activePsIdx];
+  return {
+    tas: ps.tas || 112,
+    ff:  ps.ff  || (state.cruiseMode === 'piston' ? 8.06 : 170),
+    wdir: ps.wdir || 0,
+    wspd: ps.wspd || 0,
+    var:  ps.variation || 0,
+  };
 }
 
 function calcWCA(tt, wdir, wspd, tas) {
@@ -1462,94 +1807,155 @@ function renderRouteTable() {
   const tbody = document.getElementById('route-tbody');
   tbody.innerHTML = '';
   const cs = getCruiseSettings();
-  let distTot=0, eteTot=0, fuelUsed = parseFloat(document.getElementById('fuel-onboard').value) * parseFloat(document.getElementById('fuel-density').value);
+  const density = parseFloat(document.getElementById('fuel-density').value);
   const ffPerMin = cs.ff / 60;
+  let distTot = 0, eteTot = 0;
+  let fuelRem = parseFloat(document.getElementById('fuel-onboard').value) * density;
 
-  state.waypoints.forEach((wp, i) => {
-    // Waypoint row
-    const wpRow = document.createElement('tr');
-    wpRow.classList.add('waypoint-row');
-    wpRow.innerHTML = `
-      <td style="color:var(--text-faint);font-size:10px;padding:6px 8px">WP${i+1}</td>
-      <td><input class="wp-name" type="text" value="${wp.name}" oninput="state.waypoints[${i}].name=this.value"></td>
-      <td colspan="20" style="background:var(--surface2);border:none"></td>
-      <td style="background:var(--surface2);border:none;vertical-align:bottom;"><button onclick="removeWaypoint(${i})" style="background:none;border:none;color:var(--text-dim);font-size:12px;cursor:pointer;padding:0;margin:0;">×</button></td>
-    `;
-    tbody.appendChild(wpRow);
+  // Helper: render one leg data row
+  // legIdx = index into state.legs
+  // arrLabel = label for the row (e.g. "→ WP01" or "→ DEST")
+  // isLast = whether this is the final leg (arriving at DEST)
+  function appendLegRow(legIdx, arrLabel, isLast) {
+    const leg = state.legs[legIdx];
+    const tt   = leg.tt   || 0;
+    const dist = leg.dist || 0;
+    const tas  = leg.tas  || cs.tas;
+    const mt   = ((tt - cs.var) + 360) % 360;
+    const wca  = calcWCA(tt, leg.wdir, leg.wspd, tas);
+    const mh   = Math.round(((mt + wca) + 360) % 360);
+    const gs   = calcGS(tt, leg.wdir, leg.wspd, tas);
+    const ete  = gs > 0 ? (dist / gs * 60) : 0;
+    const fuelInt = ete * ffPerMin * density;  // fuel for this leg
 
-    // Leg row (if not the last waypoint)
-    if (i < state.legs.length) {
-      const leg = state.legs[i];
-      const tt = leg.tt || 0;
-      const dist = leg.dist || 0;
-      const mt = ((tt - cs.var) + 360) % 360;
-      const wca = calcWCA(tt, leg.wdir, leg.wspd, cs.tas);
-      const mh = Math.round(((mt + wca) + 360) % 360);
-      const gs = calcGS(tt, leg.wdir, leg.wspd, cs.tas);
-      const ete = gs > 0 ? (dist / gs * 60) : 0;
-      const fuel = ete * ffPerMin * parseFloat(document.getElementById('fuel-density').value);
+    distTot += dist;
+    eteTot  += ete;
+    fuelRem -= fuelInt;
 
-      distTot += dist;
-      eteTot += ete;
-      fuelUsed -= fuel;
+    const eteMM  = Math.floor(ete);
+    const eteSS  = Math.round((ete % 1) * 60);
+    const eteStr = `${String(eteMM).padStart(2,'0')}:${String(eteSS).padStart(2,'0')}`;
 
-      const etoH = Math.floor(eteTot/60).toString().padStart(2,'0');
-      const etoM = Math.round(eteTot%60).toString().padStart(2,'0');
-      const eteStr = `${Math.floor(ete).toString().padStart(2,'0')}:${Math.round((ete%1)*60).toString().padStart(2,'0')}`;
+    // MIN fuel = minimum fuel required from this point: sum of all remaining legs + reserves
+    // Computed after render loop so we stash values; for now compute forward sum
+    const fuelFromHere = state.legs.slice(legIdx).reduce((s, l) => {
+      const lt = l.tas || cs.tas;
+      const lg = calcGS(l.tt || 0, l.wdir, l.wspd, lt);
+      return s + (lg > 0 ? ((l.dist || 0) / lg * 60) * ffPerMin * density : 0);
+    }, 0);
+    const minFuel = fuelFromHere * 1.10 + 9.0 * density + 1.1 * density; // trip-remaining + 10% rr + final + taxi
 
-      const legRow = document.createElement('tr');
-      legRow.classList.add('leg-row');
-      legRow.innerHTML = `
-        <td style="color:var(--text-dim);font-size:10px;padding:6px 8px">Leg ${i+1}</td>
-        <td style="background:var(--surface2);border:none"></td>
-        <td><input type="text" value="${leg.alt}" style="width:60px" oninput="state.legs[${i}].alt=this.value"></td>
-        <td><input type="number" value="${leg.wdir}" style="width:45px" oninput="updateLeg(${i}, 'wdir', this.value)"></td>
-        <td><input type="number" value="${leg.wspd}" style="width:45px" oninput="updateLeg(${i}, 'wspd', this.value)"></td>
-        <td>${cs.tas}</td>
-        <td class="computed-cell">${gs}</td>
-        <td><input type="number" value="${tt}" style="width:45px" oninput="updateLeg(${i}, 'tt', this.value)"></td>
-        <td>${cs.var}</td>
-        <td class="computed-cell">${mt.toFixed(0).padStart(3,'0')}</td>
-        <td class="computed-cell">${wca >= 0 ? '+' : ''}${wca}</td>
-        <td class="computed-cell">${mh.toFixed(0).padStart(3,'0')}</td>
-        <td><input type="number" value="${dist}" step="0.5" style="width:50px" oninput="updateLeg(${i}, 'dist', this.value)"></td>
-        <td class="computed-cell">${distTot.toFixed(1)}</td>
-        <td class="computed-cell">${eteStr}</td>
-        <td><input type="text" value="${leg.eto}" style="width:50px" oninput="state.legs[${i}].eto=this.value"></td>
-        <td><input type="text" value="${leg.ato}" style="width:50px" oninput="state.legs[${i}].ato=this.value"></td>
-        <td><input type="text" value="${leg.dif}" style="width:50px" oninput="state.legs[${i}].dif=this.value"></td>
-        <td><input type="text" value="${leg.reto}" style="width:50px" oninput="state.legs[${i}].reto=this.value"></td>
-        <td class="computed-cell">${fuel.toFixed(1)}</td>
-        <td><input type="number" value="${leg.fuelAct}" step="0.1" style="width:50px" oninput="state.legs[${i}].fuelAct=+this.value"></td>
-        <td class="computed-cell">${Math.max(0,fuelUsed).toFixed(1)}</td>
-        <td></td>
-      `;
-      tbody.appendChild(legRow);
+    const tr = document.createElement('tr');
+    tr.className = 'leg-row';
+    tr.innerHTML = `
+      <td style="color:var(--text-faint);font-size:10px;white-space:nowrap">${arrLabel}</td>
+      <td style="color:var(--text-dim);font-size:10px"></td>
+      <td class="rt-div"><input type="text" value="${leg.alt}" oninput="state.legs[${legIdx}].alt=this.value"></td>
+      <td><input type="text" value="${leg.ma||''}" placeholder="—" oninput="state.legs[${legIdx}].ma=this.value"></td>
+      <td class="rt-div"><input type="number" value="${leg.wdir}" oninput="updateLeg(${legIdx},'wdir',this.value)"></td>
+      <td><input type="number" value="${leg.wspd}" oninput="updateLeg(${legIdx},'wspd',this.value)"></td>
+      <td class="rt-div" style="min-width:52px"><input type="number" value="${tas}" oninput="updateLeg(${legIdx},'tas',this.value)"></td>
+      <td class="computed-cell">${gs}</td>
+      <td class="rt-div" style="min-width:52px"><input type="number" value="${tt}" oninput="updateLeg(${legIdx},'tt',this.value)"></td>
+      <td>${cs.var}</td>
+      <td class="computed-cell">${String(Math.round(mt)).padStart(3,'0')}</td>
+      <td class="computed-cell">${wca >= 0 ? '+' : ''}${wca}</td>
+      <td class="computed-cell">${String(mh).padStart(3,'0')}</td>
+      <td class="rt-div"><input type="number" value="${dist}" step="0.5" oninput="updateLeg(${legIdx},'dist',this.value)"></td>
+      <td class="computed-cell">${distTot.toFixed(1)}</td>
+      <td class="rt-div computed-cell">${eteStr}</td>
+      <td><input type="text" value="${leg.eto}" placeholder="00:00" oninput="state.legs[${legIdx}].eto=this.value"></td>
+      <td><input type="text" value="${leg.ato}" placeholder="00:00" oninput="state.legs[${legIdx}].ato=this.value"></td>
+      <td><input type="text" value="${leg.dif}" placeholder="00:00" oninput="state.legs[${legIdx}].dif=this.value"></td>
+      <td><input type="text" value="${leg.reto}" placeholder="00:00" oninput="state.legs[${legIdx}].reto=this.value"></td>
+      <td class="rt-div computed-cell">${fuelInt.toFixed(1)}</td>
+      <td class="computed-cell">${Math.max(0, fuelRem).toFixed(1)}</td>
+      <td class="computed-cell" style="color:var(--text-dim)">${minFuel.toFixed(1)}</td>
+      <td class="rt-div-right"><input type="number" value="${leg.fuelAct||''}" step="0.1" placeholder="—" oninput="state.legs[${legIdx}].fuelAct=+this.value"></td>
+      <td></td>`;
+    tbody.appendChild(tr);
+  }
+
+  // Helper: render a named waypoint row (intermediate stop)
+  function appendWpRow(wpIdx) {
+    const wp = state.waypoints[wpIdx];
+    const tr = document.createElement('tr');
+    tr.className = 'waypoint-row';
+    tr.innerHTML = `
+      <td style="color:var(--text-faint);font-size:10px">WP${String(wpIdx+1).padStart(2,'0')}</td>
+      <td><input class="wp-name" type="text" value="${wp.name}" oninput="state.waypoints[${wpIdx}].name=this.value" style="text-transform:uppercase"></td>
+      <td colspan="22" style="background:var(--surface2);border:none"></td>
+      <td style="background:var(--surface2);border:none;text-align:right">
+        <button onclick="removeWaypoint(${wpIdx})" title="Remove waypoint"
+          style="background:none;border:none;color:var(--text-dim);font-size:14px;cursor:pointer;padding:2px 6px;border-radius:2px"
+          onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'">×</button>
+      </td>`;
+    tbody.appendChild(tr);
+  }
+
+  // Helper: fixed DEP/ARR header rows
+  function appendFixedRow(label, cls) {
+    const tr = document.createElement('tr');
+    tr.className = 'waypoint-row';
+    tr.innerHTML = `
+      <td style="color:var(--amber);font-size:10px;letter-spacing:2px;text-transform:uppercase">${label}</td>
+      <td style="color:var(--text-dim);font-size:11px;font-family:var(--mono)">${cls === 'dep'
+        ? (document.getElementById('hdr-dep')?.value || 'DEP')
+        : (document.getElementById('hdr-dest')?.value || 'DEST')}</td>
+      <td colspan="22" style="background:var(--surface2);border:none"></td>
+      <td style="background:var(--surface2);border:none"></td>`;
+    tbody.appendChild(tr);
+  }
+
+  // ── RENDER SEQUENCE ──
+  // Structure: DEP | leg[0] | WP[0] | leg[1] | WP[1] | … | WP[N-1] | leg[N] | ARR
+  appendFixedRow('DEP AD', 'dep');
+
+  const N = state.waypoints.length; // number of intermediate waypoints
+  for (let i = 0; i <= N; i++) {
+    const isLast = (i === N);
+    const arrLabel = isLast ? '→ DEST' : `→ WP${String(i+1).padStart(2,'0')}`;
+    appendLegRow(i, arrLabel, isLast);
+    if (!isLast) {
+      appendWpRow(i);
     }
-  });
+  }
 
-  // totals
-  const totalH = Math.floor(eteTot/60).toString().padStart(2,'0');
-  const totalM = Math.round(eteTot%60).toString().padStart(2,'0');
-  document.getElementById('total-ete').textContent = `${totalH}:${totalM}`;
-  document.getElementById('total-fuel-used').textContent = (state.legs.reduce((s,leg) => {
-    const gs = calcGS(leg.tt||0, leg.wdir, leg.wspd, cs.tas);
-    return s + (gs > 0 ? (leg.dist/gs*60)*(cs.ff/60)*parseFloat(document.getElementById('fuel-density').value) : 0);
-  }, 0)).toFixed(1);
+  appendFixedRow('ARR AD', 'dest');
+
+  // Update header totals
+  const totalH = Math.floor(eteTot / 60);
+  const totalM = Math.round(eteTot % 60);
+  document.getElementById('total-ete').textContent = `${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}`;
+  const totalFuel = state.legs.reduce((s, leg) => {
+    const legTas = leg.tas || cs.tas;
+    const gs = calcGS(leg.tt || 0, leg.wdir, leg.wspd, legTas);
+    return s + (gs > 0 ? (leg.dist / gs * 60) * ffPerMin * density : 0);
+  }, 0);
+  document.getElementById('total-fuel-used').textContent = totalFuel.toFixed(1);
 }
 
-function recalcRoute() { renderRouteTable(); renderMBTable(); }
+function recalcRoute() { renderRouteTable(); renderMBTable(); updateFtTotals(); }
 
+// Add a new intermediate waypoint before DEST.
+// Inserts a new WP at the end of waypoints[] and a new leg before the last leg.
 function addWaypoint() {
-  const i = state.waypoints.length;
-  state.waypoints.push({ name: `WP${String(i+1).padStart(2,'0')}`, altType:'FL', alt:1500 });
-  state.legs.push({ wdir:70, wspd:17, tt:0, dist:0, fuelAct:0, eto:'00:00', ato:'00:00', dif:'00:00', reto:'00:00', alt:'' });
+  const n = state.waypoints.length;
+  state.waypoints.push({ name: `WP${String(n+1).padStart(2,'0')}` });
+  // New leg goes between the new WP and DEST, inheriting last leg's wind
+  const lastLeg = state.legs[state.legs.length - 1];
+  const newLeg  = { wdir: lastLeg.wdir, wspd: lastLeg.wspd, tas: lastLeg.tas || cs.tas, tt: 0, dist: 0, ma: '', fuelAct: 0, eto: '', ato: '', dif: '', reto: '', alt: '' };
+  // Insert new leg just before the final (DEST) leg
+  state.legs.splice(state.legs.length - 1, 0, newLeg);
   renderRouteTable();
 }
 
-function removeWaypoint(i) {
-  state.waypoints.splice(i, 1);
-  if (i < state.legs.length) state.legs.splice(i, 1);
+// Remove intermediate waypoint wpIdx.
+// Also removes leg[wpIdx] (the leg that was arriving at this waypoint).
+function removeWaypoint(wpIdx) {
+  state.waypoints.splice(wpIdx, 1);
+  // Remove the leg that arrives at this waypoint (leg index = wpIdx)
+  state.legs.splice(wpIdx, 1);
   renderRouteTable();
 }
 
@@ -1558,8 +1964,7 @@ function setCruiseMode(mode) {
   state.cruiseMode = mode;
   document.getElementById('mode-piston').classList.toggle('active', mode==='piston');
   document.getElementById('mode-turboprop').classList.toggle('active', mode==='turboprop');
-  document.getElementById('piston-settings').classList.toggle('active', mode==='piston');
-  document.getElementById('turboprop-settings').classList.toggle('active', mode==='turboprop');
+  renderPowerSettings();
   recalcRoute();
 }
 
@@ -1744,11 +2149,44 @@ function selectAcForFlight(id) {
   renderAcGrid();
 }
 
+// ─── FREQ HELPERS ─────────────────────────────────────────────────────
+function addEnrFreq() {
+  const tbody = document.getElementById('freq-enr-tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="text" placeholder="Station / FIR" class="freq-input" style="width:100%"></td>
+    <td><input type="text" placeholder="000.000" class="freq-input"></td>
+    <td><button onclick="removeFreqRow(this)" style="background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:14px;padding:0 4px">×</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function removeFreqRow(btn) {
+  const tr = btn.closest('tr');
+  if (tr) tr.remove();
+}
+
+// ─── FLIGHT TIMES TOTALS SYNC ─────────────────────────────────────────
+function updateFtTotals() {
+  const fuelOnboard = parseFloat(document.getElementById('fuel-onboard').value) || 0;
+  const density     = parseFloat(document.getElementById('fuel-density').value) || 2.725;
+  const totalFuelEl = document.getElementById('ft-total-fuel');
+  const totalEteEl  = document.getElementById('ft-total-ete-disp');
+  const totalDistEl = document.getElementById('ft-total-dist');
+  if (totalFuelEl) totalFuelEl.textContent = (fuelOnboard * density).toFixed(1) + ' kg';
+  if (totalEteEl)  totalEteEl.textContent  = document.getElementById('total-ete').textContent;
+  if (totalDistEl) {
+    const dist = state.legs.reduce((s, l) => s + (l.dist || 0), 0);
+    totalDistEl.textContent = dist.toFixed(1) + ' nm';
+  }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────
+renderPowerSettings();
 renderMBTable();
 renderFuelPhases();
 renderRouteTable();
 renderAcGrid();
+updateFtTotals();
 </script>
 </body>
 </html>
