@@ -856,10 +856,10 @@
 
   .cs-input:focus { border-bottom-color: var(--amber); }
 
-  /* remove spinner arrows from cs-inputs */
-  .cs-input::-webkit-outer-spin-button,
-  .cs-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  .cs-input[type=number] { -moz-appearance: textfield; }
+  /* Remove spinner arrows from all number inputs */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
 
   /* also move toggle inside header */
   .cruise-mode-toggle { margin-bottom: 0; }
