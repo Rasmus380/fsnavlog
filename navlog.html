@@ -879,6 +879,54 @@
   .freq-input { background:transparent; border:none; border-bottom:1px solid var(--border2); outline:none; color:var(--text); font-family:var(--mono); font-size:12px; padding:2px 4px; width:100%; min-width:60px; transition:border-color .15s, color .15s; }
   .freq-input:focus { border-bottom-color:var(--amber-dim); color:var(--amber); }
 
+  /* ─── SETTINGS OVERLAY ─────────────────────────────────────────── */
+  .stab {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+  }
+  .stab:hover { color: var(--text); }
+  .stab.active { color: var(--amber); border-bottom-color: var(--amber); }
+
+  .stab-panel { display: none; }
+  .stab-panel.active { display: block; }
+
+  /* Airport cards */
+  .ap-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .ap-card-header {
+    background: var(--surface2);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .ap-icao { font-family: var(--mono); font-size: 15px; color: var(--amber); letter-spacing: 2px; }
+  .ap-name { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin-left: 10px; }
+  .ap-rwy-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+  .ap-rwy-table th { font-family: var(--sans); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-faint); padding: 6px 12px; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .ap-rwy-table td { padding: 6px 12px; border-bottom: 1px solid var(--border2); }
+  .ap-rwy-table tr:last-child td { border-bottom: none; }
+
+  /* Runway form rows */
+  .rwy-form-row { display: grid; grid-template-columns: 80px 1fr 1fr 80px 28px; gap: 8px; align-items: end; margin-bottom: 8px; }
+
+  /* select styling */
+  select.field-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23768490'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px; }
+
   /* scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -908,16 +956,26 @@
       <div class="strip-value"><input type="date" id="hdr-date" value="2017-07-24"></div>
     </div>
     <div class="strip-field">
-      <div class="strip-label">Aircraft</div>
-      <div class="strip-value"><input type="text" id="hdr-ac" value="C172N3 · SE-LZM" style="width:130px"></div>
+      <div class="strip-label">Model</div>
+      <div class="strip-value">
+        <select id="hdr-model" onchange="onModelChange()" style="background:transparent;border:none;border-bottom:1px solid var(--amber-dim);color:var(--amber);font-family:var(--mono);font-size:13px;outline:none;cursor:pointer;width:80px">
+        </select>
+      </div>
+    </div>
+    <div class="strip-field">
+      <div class="strip-label">Registration</div>
+      <div class="strip-value">
+        <select id="hdr-reg" onchange="onRegChange()" style="background:transparent;border:none;border-bottom:1px solid var(--amber-dim);color:var(--amber);font-family:var(--mono);font-size:13px;outline:none;cursor:pointer;width:80px">
+        </select>
+      </div>
     </div>
     <div class="strip-field">
       <div class="strip-label">DEP</div>
-      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">DEST</div>
-      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">PIC</div>
@@ -928,6 +986,13 @@
       <div class="strip-value inline-flex"><div class="live-dot"></div><span style="color:var(--green);font-size:11px">PLANNED</span></div>
     </div>
   </div>
+
+  <!-- Settings cogwheel -->
+  <button onclick="openSettings()" style="margin-left:auto;margin-right:8px;background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:8px;border-radius:4px;transition:color .15s" onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='var(--text-dim)'" title="Settings">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+    </svg>
+  </button>
 </header>
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -936,7 +1001,6 @@
 <div class="tabs">
   <div class="tab active" data-tab="mb">Mass &amp; Balance</div>
   <div class="tab" data-tab="route">Route / NavLog</div>
-  <div class="tab" data-tab="aircraft">Aircraft Registry</div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -1020,6 +1084,10 @@
               <div class="perf-row"><span class="perf-row-label">TOD (actual)</span><span class="perf-row-val highlight" id="tod-actual">1 745 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">TODR (×1.25)</span><span class="perf-row-val highlight" id="todr">2 182 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">TODA available</span><span class="perf-row-val" id="toda">—</span></div>
+              <div class="perf-row" style="border-bottom:none">
+                <span class="perf-row-label">Runway</span>
+                <select id="rwy-dep" onchange="onRunwayChange('dep')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:180px"></select>
+              </div>
               <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
             </div>
@@ -1031,6 +1099,10 @@
               <div class="perf-row"><span class="perf-row-label">LD (actual)</span><span class="perf-row-val highlight" id="ld-actual">1 310 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">LDR (×1.43)</span><span class="perf-row-val highlight" id="ldr">1 874 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">LDA available</span><span class="perf-row-val" id="lda">—</span></div>
+              <div class="perf-row" style="border-bottom:none">
+                <span class="perf-row-label">Runway</span>
+                <select id="rwy-dest" onchange="onRunwayChange('dest')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:180px"></select>
+              </div>
               <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
             </div>
@@ -1263,111 +1335,94 @@
 <!-- ═══════════════════════════════════════════════════════════════════
      TAB 3 — AIRCRAFT REGISTRY
 ════════════════════════════════════════════════════════════════════ -->
-<div class="tab-panel" id="tab-aircraft">
+<!-- ═══════════════════════════════════════════════════════════════════
+     SETTINGS OVERLAY
+════════════════════════════════════════════════════════════════════ -->
+<div id="settings-overlay" onclick="if(event.target===this)closeSettings()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;backdrop-filter:blur(2px)">
+  <div id="settings-panel" style="position:absolute;right:0;top:0;bottom:0;width:min(720px,95vw);background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
 
-  <!-- New aircraft form -->
-  <div class="ac-form-wrap" id="new-ac-form" style="display:none">
-    <div class="ac-form-title" id="ac-form-title">Add New Aircraft</div>
-
-    <label class="field-label" style="margin-bottom:8px">Engine Type</label>
-    <div class="ac-type-selector">
-      <div class="type-opt selected" data-engine="piston" onclick="selectEngineType('piston')">
-        <div class="type-opt-name" style="color:var(--amber)">Piston</div>
-        <div class="type-opt-desc">RPM power setting<br>Fuel: litres/hr</div>
-      </div>
-      <div class="type-opt" data-engine="turboprop" onclick="selectEngineType('turboprop')">
-        <div class="type-opt-name">Turboprop</div>
-        <div class="type-opt-desc">Torque / ITT / NP<br>Fuel: kg/hr</div>
-      </div>
+    <!-- Panel header -->
+    <div style="display:flex;align-items:center;gap:12px;padding:16px 24px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <span style="font-family:var(--sans);font-weight:700;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--amber)">Settings</span>
+      <button onclick="closeSettings()" style="margin-left:auto;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:20px;line-height:1;padding:0 4px" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">&times;</button>
     </div>
 
-    <div class="ac-form-grid">
-      <div class="field">
-        <label class="field-label">Registration</label>
-        <input class="field-input" id="ac-reg" type="text" placeholder="SE-LZM" style="text-transform:uppercase">
-      </div>
-      <div class="field">
-        <label class="field-label">Type</label>
-        <input class="field-input" id="ac-type" type="text" placeholder="C172N3">
-      </div>
-      <div class="field">
-        <label class="field-label">BEM (kg)</label>
-        <input class="field-input" id="ac-bem" type="number" placeholder="788.8">
-      </div>
-      <div class="field">
-        <label class="field-label">BEM Arm (in)</label>
-        <input class="field-input" id="ac-bem-arm" type="number" placeholder="103.8">
-      </div>
-      <div class="field">
-        <label class="field-label">MTOM (kg)</label>
-        <input class="field-input" id="ac-mtom" type="number" placeholder="1111">
-      </div>
-      <div class="field">
-        <label class="field-label">MLM (kg)</label>
-        <input class="field-input" id="ac-mlm" type="number" placeholder="1111">
-      </div>
-      <div class="field">
-        <label class="field-label">Fuel Arm (in)</label>
-        <input class="field-input" id="ac-fuel-arm" type="number" placeholder="121.9">
-      </div>
-      <div class="field">
-        <label class="field-label">CG Fwd Limit (in)</label>
-        <input class="field-input" id="ac-cg-fwd" type="number" placeholder="95.0">
-      </div>
-      <div class="field">
-        <label class="field-label">CG Aft Limit (in)</label>
-        <input class="field-input" id="ac-cg-aft" type="number" placeholder="108.0">
-      </div>
-      <!-- Piston only -->
-      <div class="field tp-fields" data-engine="piston">
-        <label class="field-label">Cruise RPM</label>
-        <input class="field-input" id="ac-rpm" type="number" placeholder="2200">
-      </div>
-      <div class="field tp-fields" data-engine="piston">
-        <label class="field-label">Cruise TAS (kts)</label>
-        <input class="field-input" id="ac-tas-p" type="number" placeholder="112">
-      </div>
-      <div class="field tp-fields" data-engine="piston">
-        <label class="field-label">Fuel Flow (L/hr)</label>
-        <input class="field-input" id="ac-ff-p" type="number" placeholder="30.5">
-      </div>
-      <!-- Turboprop only -->
-      <div class="field tp-fields" data-engine="turboprop" style="display:none">
-        <label class="field-label">Cruise Torque (%)</label>
-        <input class="field-input" id="ac-torque" type="number" placeholder="75">
-      </div>
-      <div class="field tp-fields" data-engine="turboprop" style="display:none">
-        <label class="field-label">Cruise TAS (kts)</label>
-        <input class="field-input" id="ac-tas-tp" type="number" placeholder="180">
-      </div>
-      <div class="field tp-fields" data-engine="turboprop" style="display:none">
-        <label class="field-label">Fuel Flow (kg/hr)</label>
-        <input class="field-input" id="ac-ff-tp" type="number" placeholder="170">
-      </div>
-      <div class="field tp-fields" data-engine="turboprop" style="display:none">
-        <label class="field-label">Max ITT (°C)</label>
-        <input class="field-input" id="ac-itt" type="number" placeholder="820">
-      </div>
-      <div class="field tp-fields" data-engine="turboprop" style="display:none">
-        <label class="field-label">NP Gov (RPM)</label>
-        <input class="field-input" id="ac-np" type="number" placeholder="1900">
-      </div>
+    <!-- Settings tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div class="stab active" data-stab="aircraft" onclick="switchStab('aircraft')">Aircraft</div>
+      <div class="stab" data-stab="airports" onclick="switchStab('airports')">Airports</div>
     </div>
 
-    <div style="display:flex;gap:10px">
-      <button class="btn-sm btn-primary" onclick="saveAircraft()">Save Aircraft</button>
-      <button class="btn-sm btn-ghost" onclick="cancelAcForm()">Cancel</button>
+    <!-- Scrollable content -->
+    <div style="flex:1;overflow-y:auto;padding:20px 24px">
+
+      <!-- ── AIRCRAFT ─────────────────────────────────────────────── -->
+      <div class="stab-panel active" id="stab-aircraft">
+        <div id="new-ac-form" style="display:none;background:var(--surface2);border:1px solid var(--amber-dim);border-radius:var(--radius);padding:18px;margin-bottom:16px">
+          <div id="ac-form-title" style="font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:14px">Add New Aircraft</div>
+          <label class="field-label" style="margin-bottom:6px;display:block">Engine Type</label>
+          <div class="ac-type-selector" style="margin-bottom:14px">
+            <div class="type-opt selected" data-engine="piston" onclick="selectEngineType('piston')">
+              <div class="type-opt-name" style="color:var(--amber)">Piston</div>
+              <div class="type-opt-desc">RPM power setting<br>Fuel: USG/hr</div>
+            </div>
+            <div class="type-opt" data-engine="turboprop" onclick="selectEngineType('turboprop')">
+              <div class="type-opt-name">Turboprop</div>
+              <div class="type-opt-desc">Torque / ITT / NP<br>Fuel: kg/hr</div>
+            </div>
+          </div>
+          <div class="ac-form-grid">
+            <div class="field"><label class="field-label">Registration</label><input class="field-input" id="ac-reg" type="text" placeholder="SE-ABC" style="text-transform:uppercase"></div>
+            <div class="field"><label class="field-label">Type / Model</label><input class="field-input" id="ac-type" type="text" placeholder="C172N3"></div>
+            <div class="field"><label class="field-label">BEM (kg)</label><input class="field-input" id="ac-bem" type="number" placeholder="788.8"></div>
+            <div class="field"><label class="field-label">BEM Arm (in)</label><input class="field-input" id="ac-bem-arm" type="number" placeholder="103.8"></div>
+            <div class="field"><label class="field-label">MTOM (kg)</label><input class="field-input" id="ac-mtom" type="number" placeholder="1111"></div>
+            <div class="field"><label class="field-label">MLM (kg)</label><input class="field-input" id="ac-mlm" type="number" placeholder="1111"></div>
+            <div class="field"><label class="field-label">Fuel Arm (in)</label><input class="field-input" id="ac-fuel-arm" type="number" placeholder="121.9"></div>
+            <div class="field"><label class="field-label">CG Fwd (in)</label><input class="field-input" id="ac-cg-fwd" type="number" placeholder="95.0"></div>
+            <div class="field"><label class="field-label">CG Aft (in)</label><input class="field-input" id="ac-cg-aft" type="number" placeholder="108.0"></div>
+            <div class="field tp-fields" data-engine="piston"><label class="field-label">Cruise RPM</label><input class="field-input" id="ac-rpm" type="number" placeholder="2200"></div>
+            <div class="field tp-fields" data-engine="piston"><label class="field-label">Cruise TAS (kts)</label><input class="field-input" id="ac-tas-p" type="number" placeholder="112"></div>
+            <div class="field tp-fields" data-engine="piston"><label class="field-label">Fuel Flow (USG/hr)</label><input class="field-input" id="ac-ff-p" type="number" placeholder="8.06"></div>
+            <div class="field tp-fields" data-engine="turboprop" style="display:none"><label class="field-label">Cruise Torque (%)</label><input class="field-input" id="ac-torque" type="number" placeholder="75"></div>
+            <div class="field tp-fields" data-engine="turboprop" style="display:none"><label class="field-label">Cruise TAS (kts)</label><input class="field-input" id="ac-tas-tp" type="number" placeholder="180"></div>
+            <div class="field tp-fields" data-engine="turboprop" style="display:none"><label class="field-label">Fuel Flow (kg/hr)</label><input class="field-input" id="ac-ff-tp" type="number" placeholder="170"></div>
+            <div class="field tp-fields" data-engine="turboprop" style="display:none"><label class="field-label">Max ITT (°C)</label><input class="field-input" id="ac-itt" type="number" placeholder="820"></div>
+            <div class="field tp-fields" data-engine="turboprop" style="display:none"><label class="field-label">NP Gov (RPM)</label><input class="field-input" id="ac-np" type="number" placeholder="1900"></div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button class="btn-sm btn-primary" onclick="saveAircraft()">Save Aircraft</button>
+            <button class="btn-sm btn-ghost" onclick="cancelAcForm()">Cancel</button>
+          </div>
+        </div>
+        <div class="ac-grid" id="ac-grid"></div>
+        <button class="add-wp-btn" onclick="showAcForm()" style="margin-top:10px">+ Add Aircraft</button>
+      </div>
+
+      <!-- ── AIRPORTS ─────────────────────────────────────────────── -->
+      <div class="stab-panel" id="stab-airports">
+        <div id="new-ap-form" style="display:none;background:var(--surface2);border:1px solid var(--amber-dim);border-radius:var(--radius);padding:18px;margin-bottom:16px">
+          <div id="ap-form-title" style="font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:14px">Add Airport</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div class="field"><label class="field-label">ICAO</label><input class="field-input" id="ap-icao" type="text" placeholder="ESOW" style="text-transform:uppercase"></div>
+            <div class="field"><label class="field-label">Name</label><input class="field-input" id="ap-name" type="text" placeholder="Västerås"></div>
+          </div>
+          <div style="font-family:var(--sans);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px">Runways</div>
+          <div id="ap-runways-form"></div>
+          <button class="add-wp-btn" onclick="addRunwayField()" style="margin-bottom:14px">+ Add Runway</button>
+          <div style="display:flex;gap:10px">
+            <button class="btn-sm btn-primary" onclick="saveAirport()">Save Airport</button>
+            <button class="btn-sm btn-ghost" onclick="cancelApForm()">Cancel</button>
+          </div>
+        </div>
+        <div id="ap-grid"></div>
+        <button class="add-wp-btn" onclick="showApForm()" style="margin-top:10px">+ Add Airport</button>
+      </div>
+
     </div>
   </div>
-
-  <!-- Aircraft grid -->
-  <div class="ac-grid" id="ac-grid">
-    <!-- populated by JS -->
-  </div>
-
-  <button class="add-wp-btn" onclick="showAcForm()">+ Add Aircraft</button>
-
-</div><!-- /tab-aircraft -->
+</div>
 </main>
 
 <!-- ═══════════════════════════════════════════════════════════════════
@@ -1384,11 +1439,21 @@ const state = {
   selectedAc: null,
   editingAcId: null,
   aircraft: [
-    { id: 1, reg: 'SE-LZD', type: 'C172',   engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.06 },
-    { id: 2, reg: 'SE-LZE', type: 'C172N3', engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.06 },
-    { id: 3, reg: 'SE-LZF', type: 'C172R',  engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.1 },
-    { id: 4, reg: 'SE-LZI', type: 'C208B',  engine:'turboprop', bem:2145,  bemArm:122.0, mtom:3629, mlm:3629, fuelArm:128.0, cgFwd:110, cgAft:130, torque:75, tas:180, ff:170, maxItt:820, np:1900 },
+    { id: 1, reg: 'ASXGSA', type: 'C172N3', engine:'piston',    bem:788.8, bemArm:103.8, mtom:1111, mlm:1111, fuelArm:121.9, cgFwd:95, cgAft:108, rpm:2200, tas:112, ff:8.06 },
+    { id: 2, reg: 'N847TF',  type: 'C208B',  engine:'turboprop', bem:2145,  bemArm:122.0, mtom:3629, mlm:3629, fuelArm:128.0, cgFwd:110, cgAft:130, torque:75, tas:180, ff:170, maxItt:820, np:1900 },
   ],
+  airports: [
+    { id: 1, icao:'ESOW', name:'Västerås', runways:[
+      { id:'r1', name:'01', toda:1200, lda:1100, unit:'m' },
+      { id:'r2', name:'19', toda:1200, lda:1100, unit:'m' },
+    ]},
+    { id: 2, icao:'ESSD', name:'Borlänge', runways:[
+      { id:'r1', name:'08', toda:1800, lda:1700, unit:'m' },
+      { id:'r2', name:'26', toda:1800, lda:1700, unit:'m' },
+    ]},
+  ],
+  selectedDepRunway: null,
+  selectedDestRunway: null,
   mbItems: [
     { label: 'BEM',        mass: 788.8, arm: 103.8, editable: false },
     { label: '+ Pilots',   mass: 112,   arm: 94,    editable: true  },
@@ -2180,7 +2245,217 @@ function updateFtTotals() {
   }
 }
 
+// ─── SETTINGS OVERLAY ─────────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('settings-overlay').style.display = 'block';
+  renderAcGrid();
+  renderAirportGrid();
+}
+
+function closeSettings() {
+  document.getElementById('settings-overlay').style.display = 'none';
+}
+
+function switchStab(name) {
+  document.querySelectorAll('.stab').forEach(t => t.classList.toggle('active', t.dataset.stab === name));
+  document.querySelectorAll('.stab-panel').forEach(p => p.classList.toggle('active', p.id === 'stab-' + name));
+}
+
+// ─── HEADER DROPDOWNS ─────────────────────────────────────────────────
+function populateModelDropdown() {
+  const sel = document.getElementById('hdr-model');
+  const models = [...new Set(state.aircraft.map(a => a.type))];
+  sel.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('');
+  populateRegDropdown();
+}
+
+function populateRegDropdown() {
+  const model = document.getElementById('hdr-model').value;
+  const sel = document.getElementById('hdr-reg');
+  const regs = state.aircraft.filter(a => a.type === model);
+  sel.innerHTML = regs.map(a => `<option value="${a.id}">${a.reg}</option>`).join('');
+  applySelectedAc();
+}
+
+function onModelChange() { populateRegDropdown(); }
+
+function onRegChange() { applySelectedAc(); }
+
+function applySelectedAc() {
+  const id = parseInt(document.getElementById('hdr-reg').value);
+  const ac = state.aircraft.find(a => a.id === id);
+  if (!ac) return;
+  state.selectedAc = ac.id;
+  state.mbItems[0].mass = ac.bem;
+  state.mbItems[0].arm  = ac.bemArm;
+  state.fuelArm = ac.fuelArm || 121.9;
+  if (ac.engine === 'piston') {
+    setCruiseMode('piston');
+    state.powerSettings[state.activePsIdx].rpm = ac.rpm || 2200;
+    state.powerSettings[state.activePsIdx].tas = ac.tas || 112;
+    state.powerSettings[state.activePsIdx].ff  = ac.ff  || 8.06;
+  } else {
+    setCruiseMode('turboprop');
+    state.powerSettings[state.activePsIdx].torque = ac.torque || 75;
+    state.powerSettings[state.activePsIdx].tas    = ac.tas    || 180;
+    state.powerSettings[state.activePsIdx].ff     = ac.ff     || 170;
+    state.powerSettings[state.activePsIdx].itt    = ac.maxItt || 820;
+    state.powerSettings[state.activePsIdx].np     = ac.np     || 1900;
+  }
+  renderPowerSettings();
+  renderMBTable();
+  recalcRoute();
+}
+
+// ─── AIRPORT REGISTRY ─────────────────────────────────────────────────
+let editingApId = null;
+let apRunwayFields = [];
+
+function renderAirportGrid() {
+  const grid = document.getElementById('ap-grid');
+  if (!grid) return;
+  grid.innerHTML = state.airports.map(ap => {
+    const rwyRows = ap.runways.map(rw => {
+      const toda = rw.unit === 'ft' ? rw.toda : Math.round(rw.toda * 3.28084);
+      const lda  = rw.unit === 'ft' ? rw.lda  : Math.round(rw.lda  * 3.28084);
+      const todaM = rw.unit === 'm' ? rw.toda : Math.round(rw.toda / 3.28084);
+      const ldaM  = rw.unit === 'm' ? rw.lda  : Math.round(rw.lda  / 3.28084);
+      return `<tr>
+        <td>${rw.name}</td>
+        <td>${rw.toda} ${rw.unit} <span style="color:var(--text-faint);font-size:10px">(${rw.unit==='m'?toda+' ft':todaM+' m'})</span></td>
+        <td>${rw.lda} ${rw.unit} <span style="color:var(--text-faint);font-size:10px">(${rw.unit==='m'?lda+' ft':ldaM+' m'})</span></td>
+      </tr>`;
+    }).join('');
+    return `<div class="ap-card">
+      <div class="ap-card-header">
+        <div><span class="ap-icao">${ap.icao}</span><span class="ap-name">${ap.name}</span></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-sm btn-ghost" onclick="editAirport(${ap.id})">Edit</button>
+          <button class="btn-sm btn-danger" onclick="deleteAirport(${ap.id})">Delete</button>
+        </div>
+      </div>
+      <table class="ap-rwy-table">
+        <thead><tr><th>Runway</th><th>TODA</th><th>LDA</th></tr></thead>
+        <tbody>${rwyRows}</tbody>
+      </table>
+    </div>`;
+  }).join('');
+}
+
+function showApForm() {
+  editingApId = null;
+  apRunwayFields = [{ name:'', toda:'', lda:'', unit:'m' }];
+  document.getElementById('ap-form-title').textContent = 'Add Airport';
+  document.getElementById('ap-icao').value = '';
+  document.getElementById('ap-name').value = '';
+  renderRunwayFields();
+  document.getElementById('new-ap-form').style.display = 'block';
+}
+
+function cancelApForm() { document.getElementById('new-ap-form').style.display = 'none'; }
+
+function renderRunwayFields() {
+  document.getElementById('ap-runways-form').innerHTML = apRunwayFields.map((rw, i) => `
+    <div class="rwy-form-row">
+      <div class="field"><label class="field-label">Rwy</label><input class="field-input" type="text" value="${rw.name}" placeholder="01" oninput="apRunwayFields[${i}].name=this.value"></div>
+      <div class="field"><label class="field-label">TODA</label><input class="field-input" type="number" value="${rw.toda}" placeholder="1200" oninput="apRunwayFields[${i}].toda=+this.value"></div>
+      <div class="field"><label class="field-label">LDA</label><input class="field-input" type="number" value="${rw.lda}" placeholder="1100" oninput="apRunwayFields[${i}].lda=+this.value"></div>
+      <div class="field"><label class="field-label">Unit</label>
+        <select class="field-input" onchange="apRunwayFields[${i}].unit=this.value">
+          <option value="m" ${rw.unit==='m'?'selected':''}>m</option>
+          <option value="ft" ${rw.unit==='ft'?'selected':''}>ft</option>
+        </select>
+      </div>
+      ${apRunwayFields.length > 1 ? `<button onclick="removeRunwayField(${i})" style="background:none;border:1px solid #5c2020;border-radius:var(--radius);color:var(--red);cursor:pointer;padding:0 6px;font-size:16px;align-self:flex-end;height:32px">×</button>` : '<div></div>'}
+    </div>`).join('');
+}
+
+function addRunwayField() {
+  apRunwayFields.push({ name:'', toda:'', lda:'', unit:'m' });
+  renderRunwayFields();
+}
+
+function removeRunwayField(i) {
+  apRunwayFields.splice(i, 1);
+  renderRunwayFields();
+}
+
+function saveAirport() {
+  const icao = document.getElementById('ap-icao').value.toUpperCase().trim();
+  const name = document.getElementById('ap-name').value.trim();
+  if (!icao) return;
+  const ap = { id: editingApId || Date.now(), icao, name, runways: apRunwayFields.map((r, i) => ({ id: 'r'+(i+1), ...r })) };
+  if (editingApId) {
+    const idx = state.airports.findIndex(a => a.id === editingApId);
+    if (idx !== -1) state.airports[idx] = ap;
+  } else {
+    state.airports.push(ap);
+  }
+  cancelApForm();
+  renderAirportGrid();
+  updateRunwayDropdowns();
+}
+
+function editAirport(id) {
+  const ap = state.airports.find(a => a.id === id);
+  if (!ap) return;
+  editingApId = id;
+  document.getElementById('ap-form-title').textContent = `Edit ${ap.icao}`;
+  document.getElementById('ap-icao').value = ap.icao;
+  document.getElementById('ap-name').value = ap.name;
+  apRunwayFields = ap.runways.map(r => ({ ...r }));
+  renderRunwayFields();
+  document.getElementById('new-ap-form').style.display = 'block';
+}
+
+function deleteAirport(id) {
+  state.airports = state.airports.filter(a => a.id !== id);
+  renderAirportGrid();
+  updateRunwayDropdowns();
+}
+
+// ─── RUNWAY DROPDOWNS ON PERFORMANCE CARDS ────────────────────────────
+function updateRunwayDropdowns() {
+  ['dep','dest'].forEach(which => {
+    const icaoInput = document.getElementById(`hdr-${which === 'dep' ? 'dep' : 'dest'}`);
+    const icao = icaoInput ? icaoInput.value.toUpperCase() : '';
+    const ap = state.airports.find(a => a.icao === icao);
+    const sel = document.getElementById(`rwy-${which}`);
+    if (!sel) return;
+    if (ap && ap.runways.length) {
+      sel.innerHTML = ap.runways.map(r => `<option value="${r.id}">${r.name} — TODA ${r.toda}${r.unit} / LDA ${r.lda}${r.unit}</option>`).join('');
+      sel.style.display = '';
+    } else {
+      sel.innerHTML = '<option>No runways</option>';
+    }
+    onRunwayChange(which);
+  });
+}
+
+function onRunwayChange(which) {
+  const icao = document.getElementById(`hdr-${which === 'dep' ? 'dep' : 'dest'}`).value.toUpperCase();
+  const ap = state.airports.find(a => a.icao === icao);
+  const sel = document.getElementById(`rwy-${which}`);
+  if (!ap || !sel) return;
+  const rw = ap.runways.find(r => r.id === sel.value) || ap.runways[0];
+  if (!rw) return;
+
+  const toFt = v => rw.unit === 'm' ? Math.round(v * 3.28084) : v;
+  const toM  = v => rw.unit === 'ft' ? Math.round(v / 3.28084) : v;
+  const todaFt = toFt(rw.toda), ldaFt = toFt(rw.lda);
+  const todaM  = toM(rw.toda),  ldaM  = toM(rw.lda);
+
+  if (which === 'dep') {
+    const todaEl = document.getElementById('toda');
+    if (todaEl) todaEl.textContent = `${todaFt.toLocaleString()} ft / ${todaM} m`;
+  } else {
+    const ldaEl = document.getElementById('lda');
+    if (ldaEl) ldaEl.textContent = `${ldaFt.toLocaleString()} ft / ${ldaM} m`;
+  }
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────
+populateModelDropdown();
 renderPowerSettings();
 renderMBTable();
 renderFuelPhases();
