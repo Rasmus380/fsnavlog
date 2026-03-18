@@ -92,7 +92,10 @@
     align-items: center;
     gap: 0;
     flex: 1;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
   }
 
   .strip-field {
@@ -971,11 +974,11 @@
     </div>
     <div class="strip-field">
       <div class="strip-label">DEP</div>
-      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">DEST</div>
-      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">PIC</div>
@@ -989,8 +992,8 @@
 
   <!-- Settings cogwheel -->
   <button onclick="openSettings()" style="margin-left:auto;margin-right:8px;background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:8px;border-radius:4px;transition:color .15s" onmouseover="this.style.color='var(--amber)'" onmouseout="this.style.color='var(--text-dim)'" title="Settings">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-      <circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.36.07-.73.07-1.08s-.03-.73-.07-1.08l2.33-1.82c.21-.16.27-.46.13-.7l-2.21-3.83a.55.55 0 0 0-.68-.23l-2.75 1.1a8.1 8.1 0 0 0-1.87-1.08l-.42-2.93A.54.54 0 0 0 14 1h-4a.54.54 0 0 0-.54.46l-.42 2.93A8.1 8.1 0 0 0 7.17 5.47L4.43 4.37a.54.54 0 0 0-.68.23L1.54 8.43c-.14.24-.08.54.13.7l2.33 1.82C3.96 11.27 3.93 11.63 3.93 12s.03.73.07 1.08L1.67 14.9c-.21.16-.27.46-.13.7l2.21 3.83c.14.24.44.31.68.23l2.74-1.1c.59.43 1.22.79 1.87 1.08l.42 2.93c.07.28.29.46.54.46h4c.25 0 .47-.18.54-.46l.42-2.93a8.1 8.1 0 0 0 1.87-1.08l2.74 1.1c.24.08.54.01.68-.23l2.21-3.83c.14-.24.08-.54-.13-.7l-2.33-1.82z"/>
     </svg>
   </button>
 </header>
@@ -1045,11 +1048,11 @@
           <div class="col-2" style="gap:10px">
             <div class="field">
               <label class="field-label">Fuel Onboard (USG)</label>
-              <input class="field-input" id="fuel-onboard" type="number" value="50" step="1" oninput="recalcFuel()">
+              <input class="field-input" id="fuel-onboard" type="number" value="50" step="1" onchange="recalcFuel()">
             </div>
             <div class="field">
               <label class="field-label">Fuel Density (kg/USG)</label>
-              <input class="field-input" id="fuel-density" type="number" value="2.725" step="0.001" oninput="recalcFuel()">
+              <input class="field-input" id="fuel-density" type="number" value="2.725" step="0.001" onchange="recalcFuel()">
             </div>
           </div>
         </div>
@@ -1526,7 +1529,7 @@ function renderMBTable() {
     tr.innerHTML = `
       <td>${item.label}</td>
       <td>${item.editable
-        ? `<input type="number" value="${item.mass}" step="0.1" oninput="updateMBItem(${i}, this.value)">`
+        ? `<input type="number" value="${item.mass}" step="0.1" onchange="updateMBItem(${i}, this.value)">`
         : item.mass.toFixed(1)}</td>
       <td>${item.arm.toFixed(1)}</td>
       <td>${moment}</td>`;
@@ -1730,34 +1733,34 @@ function renderPowerSettings() {
       <div style="display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)">
         <div class="cs-tile">
           <div class="cs-label">Power (RPM)</div>
-          <input class="cs-input" type="number" value="${ps.rpm}" oninput="updatePs(${activeIdx},'rpm',this.value)">
+          <input class="cs-input" type="number" value="${ps.rpm}" onchange="updatePs(${activeIdx},'rpm',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">Altitude (ft)</div>
-          <input class="cs-input" type="number" value="${ps.alt}" oninput="updatePs(${activeIdx},'alt',this.value)">
+          <input class="cs-input" type="number" value="${ps.alt}" onchange="updatePs(${activeIdx},'alt',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">TAS (kts)</div>
-          <input class="cs-input" type="number" value="${ps.tas}" oninput="updatePs(${activeIdx},'tas',this.value)">
+          <input class="cs-input" type="number" value="${ps.tas}" onchange="updatePs(${activeIdx},'tas',this.value)">
         </div>
         <div class="cs-tile cs-tile-last">
           <div class="cs-label">Fuel Flow (USG/hr)</div>
-          <input class="cs-input" type="number" value="${ps.ff}" step="0.01" oninput="updatePs(${activeIdx},'ff',this.value)">
+          <input class="cs-input" type="number" value="${ps.ff}" step="0.01" onchange="updatePs(${activeIdx},'ff',this.value)">
         </div>
       </div>
       <!-- Row 2: wind + variation -->
       <div style="display:flex;flex-wrap:wrap">
         <div class="cs-tile cs-tile-secondary">
           <div class="cs-label">Variation (°)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" oninput="updatePs(${activeIdx},'variation',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" onchange="updatePs(${activeIdx},'variation',this.value)">
         </div>
         <div class="cs-tile cs-tile-secondary cs-tile-wide">
           <div class="cs-label">Wind Direction (°)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" oninput="updatePs(${activeIdx},'wdir',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" onchange="updatePs(${activeIdx},'wdir',this.value)">
         </div>
         <div class="cs-tile cs-tile-secondary cs-tile-last">
           <div class="cs-label">Wind Speed (kts)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" oninput="updatePs(${activeIdx},'wspd',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" onchange="updatePs(${activeIdx},'wspd',this.value)">
         </div>
       </div>`;
   } else {
@@ -1769,42 +1772,42 @@ function renderPowerSettings() {
       <div style="display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)">
         <div class="cs-tile">
           <div class="cs-label">Torque (% Tq)</div>
-          <input class="cs-input" type="number" value="${ps.torque}" oninput="updatePs(${activeIdx},'torque',this.value)">
+          <input class="cs-input" type="number" value="${ps.torque}" onchange="updatePs(${activeIdx},'torque',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">NP (RPM)</div>
-          <input class="cs-input" type="number" value="${ps.np}" oninput="updatePs(${activeIdx},'np',this.value)">
+          <input class="cs-input" type="number" value="${ps.np}" onchange="updatePs(${activeIdx},'np',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">ITT (°C)</div>
-          <input class="cs-input" type="number" value="${ps.itt}" oninput="updatePs(${activeIdx},'itt',this.value)">
+          <input class="cs-input" type="number" value="${ps.itt}" onchange="updatePs(${activeIdx},'itt',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">Altitude (ft)</div>
-          <input class="cs-input" type="number" value="${ps.alt}" oninput="updatePs(${activeIdx},'alt',this.value)">
+          <input class="cs-input" type="number" value="${ps.alt}" onchange="updatePs(${activeIdx},'alt',this.value)">
         </div>
         <div class="cs-tile">
           <div class="cs-label">TAS (kts)</div>
-          <input class="cs-input" type="number" value="${ps.tas}" oninput="updatePs(${activeIdx},'tas',this.value)">
+          <input class="cs-input" type="number" value="${ps.tas}" onchange="updatePs(${activeIdx},'tas',this.value)">
         </div>
         <div class="cs-tile cs-tile-last">
           <div class="cs-label">Fuel Flow (kg/hr)</div>
-          <input class="cs-input" type="number" value="${ps.ff}" step="1" oninput="updatePs(${activeIdx},'ff',this.value)">
+          <input class="cs-input" type="number" value="${ps.ff}" step="1" onchange="updatePs(${activeIdx},'ff',this.value)">
         </div>
       </div>
       <!-- Row 2: wind + variation -->
       <div style="display:flex;flex-wrap:wrap">
         <div class="cs-tile cs-tile-secondary">
           <div class="cs-label">Variation (°)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" oninput="updatePs(${activeIdx},'variation',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.variation}" onchange="updatePs(${activeIdx},'variation',this.value)">
         </div>
         <div class="cs-tile cs-tile-secondary cs-tile-wide">
           <div class="cs-label">Wind Direction (°)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" oninput="updatePs(${activeIdx},'wdir',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wdir}" placeholder="Dir" onchange="updatePs(${activeIdx},'wdir',this.value)">
         </div>
         <div class="cs-tile cs-tile-secondary cs-tile-last">
           <div class="cs-label">Wind Speed (kts)</div>
-          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" oninput="updatePs(${activeIdx},'wspd',this.value)">
+          <input class="cs-input cs-input-sm" type="number" value="${ps.wspd}" placeholder="Kts" onchange="updatePs(${activeIdx},'wspd',this.value)">
         </div>
       </div>`;
   }
@@ -1915,28 +1918,28 @@ function renderRouteTable() {
     tr.innerHTML = `
       <td style="color:var(--text-faint);font-size:10px;white-space:nowrap">${arrLabel}</td>
       <td style="color:var(--text-dim);font-size:10px"></td>
-      <td class="rt-div"><input type="text" value="${leg.alt}" oninput="state.legs[${legIdx}].alt=this.value"></td>
-      <td><input type="text" value="${leg.ma||''}" placeholder="—" oninput="state.legs[${legIdx}].ma=this.value"></td>
-      <td class="rt-div"><input type="number" value="${leg.wdir}" oninput="updateLeg(${legIdx},'wdir',this.value)"></td>
-      <td><input type="number" value="${leg.wspd}" oninput="updateLeg(${legIdx},'wspd',this.value)"></td>
-      <td class="rt-div" style="min-width:52px"><input type="number" value="${tas}" oninput="updateLeg(${legIdx},'tas',this.value)"></td>
+      <td class="rt-div"><input type="text" value="${leg.alt}" onchange="state.legs[${legIdx}].alt=this.value"></td>
+      <td><input type="text" value="${leg.ma||''}" placeholder="—" onchange="state.legs[${legIdx}].ma=this.value"></td>
+      <td class="rt-div"><input type="number" value="${leg.wdir}" onchange="updateLeg(${legIdx},'wdir',this.value)"></td>
+      <td><input type="number" value="${leg.wspd}" onchange="updateLeg(${legIdx},'wspd',this.value)"></td>
+      <td class="rt-div" style="min-width:52px"><input type="number" value="${tas}" onchange="updateLeg(${legIdx},'tas',this.value)"></td>
       <td class="computed-cell">${gs}</td>
-      <td class="rt-div" style="min-width:52px"><input type="number" value="${tt}" oninput="updateLeg(${legIdx},'tt',this.value)"></td>
+      <td class="rt-div" style="min-width:52px"><input type="text" value="${String(tt).padStart(3,'0')}" onchange="updateLeg(${legIdx},'tt',this.value);this.value=String(Math.max(0,Math.min(360,+this.value||0))).padStart(3,'0')" style="text-align:right"></td>
       <td>${cs.var}</td>
       <td class="computed-cell">${String(Math.round(mt)).padStart(3,'0')}</td>
       <td class="computed-cell">${wca >= 0 ? '+' : ''}${wca}</td>
       <td class="computed-cell">${String(mh).padStart(3,'0')}</td>
-      <td class="rt-div"><input type="number" value="${dist}" step="0.5" oninput="updateLeg(${legIdx},'dist',this.value)"></td>
+      <td class="rt-div"><input type="number" value="${dist}" step="0.5" onchange="updateLeg(${legIdx},'dist',this.value)"></td>
       <td class="computed-cell">${distTot.toFixed(1)}</td>
       <td class="rt-div computed-cell">${eteStr}</td>
-      <td><input type="text" value="${leg.eto}" placeholder="00:00" oninput="state.legs[${legIdx}].eto=this.value"></td>
-      <td><input type="text" value="${leg.ato}" placeholder="00:00" oninput="state.legs[${legIdx}].ato=this.value"></td>
-      <td><input type="text" value="${leg.dif}" placeholder="00:00" oninput="state.legs[${legIdx}].dif=this.value"></td>
-      <td><input type="text" value="${leg.reto}" placeholder="00:00" oninput="state.legs[${legIdx}].reto=this.value"></td>
+      <td><input type="text" value="${leg.eto}" placeholder="00:00" onchange="state.legs[${legIdx}].eto=this.value"></td>
+      <td><input type="text" value="${leg.ato}" placeholder="00:00" onchange="state.legs[${legIdx}].ato=this.value"></td>
+      <td><input type="text" value="${leg.dif}" placeholder="00:00" onchange="state.legs[${legIdx}].dif=this.value"></td>
+      <td><input type="text" value="${leg.reto}" placeholder="00:00" onchange="state.legs[${legIdx}].reto=this.value"></td>
       <td class="rt-div computed-cell">${fuelInt.toFixed(1)}</td>
       <td class="computed-cell">${Math.max(0, fuelRem).toFixed(1)}</td>
       <td class="computed-cell" style="color:var(--text-dim)">${minFuel.toFixed(1)}</td>
-      <td class="rt-div-right"><input type="number" value="${leg.fuelAct||''}" step="0.1" placeholder="—" oninput="state.legs[${legIdx}].fuelAct=+this.value"></td>
+      <td class="rt-div-right"><input type="number" value="${leg.fuelAct||''}" step="0.1" placeholder="—" onchange="state.legs[${legIdx}].fuelAct=+this.value"></td>
       <td></td>`;
     tbody.appendChild(tr);
   }
