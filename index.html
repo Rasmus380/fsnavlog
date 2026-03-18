@@ -974,11 +974,11 @@
     </div>
     <div class="strip-field">
       <div class="strip-label">DEP</div>
-      <div class="strip-value"><input type="text" id="hdr-dep" value="ESOW" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dep" value="EGLL" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">DEST</div>
-      <div class="strip-value"><input type="text" id="hdr-dest" value="ESSD" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
+      <div class="strip-value"><input type="text" id="hdr-dest" value="KJFK" style="width:55px;text-transform:uppercase" onchange="this.value=this.value.toUpperCase();renderRouteTable();updateRunwayDropdowns()"></div>
     </div>
     <div class="strip-field">
       <div class="strip-label">PIC</div>
@@ -1084,30 +1084,52 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M5 19l14-14M19 5H9M19 5v10"/></svg>
                 Take-Off
               </div>
-              <div class="perf-row"><span class="perf-row-label">TOD (actual)</span><span class="perf-row-val highlight" id="tod-actual">1 745 ft</span></div>
+              <div class="perf-row">
+                <span class="perf-row-label">TOD (actual)</span>
+                <input id="tod-actual" type="number" value="1745" onchange="updatePerfDerived()"
+                  style="background:transparent;border:none;border-bottom:1px solid var(--amber-dim);outline:none;color:var(--amber);font-family:var(--mono);font-size:12px;text-align:right;width:90px">
+                <span id="tod-unit" style="color:var(--amber);font-family:var(--mono);font-size:11px;margin-left:3px">ft</span>
+              </div>
               <div class="perf-row"><span class="perf-row-label">TODR (×1.25)</span><span class="perf-row-val highlight" id="todr">2 182 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">TODA available</span><span class="perf-row-val" id="toda">—</span></div>
               <div class="perf-row" style="border-bottom:none">
                 <span class="perf-row-label">Runway</span>
-                <select id="rwy-dep" onchange="onRunwayChange('dep')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:180px"></select>
+                <select id="rwy-dep" onchange="onRunwayChange('dep')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:100px"></select>
               </div>
-              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
-              <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
+              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val" id="dep-elev">—</span></div>
+              <div class="perf-row">
+                <span class="perf-row-label">ISA Temp</span>
+                <span style="display:flex;align-items:center;gap:3px">
+                  <input id="dep-isa" type="number" value="20" style="background:transparent;border:none;border-bottom:1px solid var(--border2);outline:none;color:var(--text);font-family:var(--mono);font-size:12px;text-align:right;width:50px">
+                  <span style="color:var(--text-dim);font-family:var(--mono);font-size:11px">°C</span>
+                </span>
+              </div>
             </div>
             <div class="perf-card">
               <div class="perf-card-title">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M19 5L5 19M5 19h10M5 19v-10"/></svg>
                 Landing
               </div>
-              <div class="perf-row"><span class="perf-row-label">LD (actual)</span><span class="perf-row-val highlight" id="ld-actual">1 310 ft</span></div>
+              <div class="perf-row">
+                <span class="perf-row-label">LD (actual)</span>
+                <input id="ld-actual" type="number" value="1310" onchange="updatePerfDerived()"
+                  style="background:transparent;border:none;border-bottom:1px solid var(--green-dim);outline:none;color:var(--green);font-family:var(--mono);font-size:12px;text-align:right;width:90px">
+                <span id="ld-unit" style="color:var(--green);font-family:var(--mono);font-size:11px;margin-left:3px">ft</span>
+              </div>
               <div class="perf-row"><span class="perf-row-label">LDR (×1.43)</span><span class="perf-row-val highlight" id="ldr">1 874 ft</span></div>
               <div class="perf-row"><span class="perf-row-label">LDA available</span><span class="perf-row-val" id="lda">—</span></div>
               <div class="perf-row" style="border-bottom:none">
                 <span class="perf-row-label">Runway</span>
-                <select id="rwy-dest" onchange="onRunwayChange('dest')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:180px"></select>
+                <select id="rwy-dest" onchange="onRunwayChange('dest')" style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 6px;outline:none;max-width:100px"></select>
               </div>
-              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val">0 ft</span></div>
-              <div class="perf-row"><span class="perf-row-label">ISA Temp</span><span class="perf-row-val">+20 °C</span></div>
+              <div class="perf-row"><span class="perf-row-label">Elevation</span><span class="perf-row-val" id="dest-elev">—</span></div>
+              <div class="perf-row">
+                <span class="perf-row-label">ISA Temp</span>
+                <span style="display:flex;align-items:center;gap:3px">
+                  <input id="dest-isa" type="number" value="20" style="background:transparent;border:none;border-bottom:1px solid var(--border2);outline:none;color:var(--text);font-family:var(--mono);font-size:12px;text-align:right;width:50px">
+                  <span style="color:var(--text-dim);font-family:var(--mono);font-size:11px">°C</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -1148,11 +1170,11 @@
           <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px">
             <div class="ft-cell"><div class="ft-label">Tach Out</div><input class="ft-input" type="text" id="ft-tach-out" placeholder="—"></div>
             <div class="ft-cell"><div class="ft-label">Tach In</div><input class="ft-input" type="text" id="ft-tach-in" placeholder="—"></div>
-            <div class="ft-cell"><div class="ft-label">Block Off</div><input class="ft-input" type="text" id="ft-block-off" placeholder="00:00"></div>
-            <div class="ft-cell"><div class="ft-label">Take Off</div><input class="ft-input" type="text" id="ft-takeoff" placeholder="00:00"></div>
-            <div class="ft-cell"><div class="ft-label">Landing</div><input class="ft-input" type="text" id="ft-landing" placeholder="00:00"></div>
-            <div class="ft-cell"><div class="ft-label">Block On</div><input class="ft-input" type="text" id="ft-block-on" placeholder="00:00"></div>
-            <div class="ft-cell"><div class="ft-label">Block A/B</div><input class="ft-input" type="text" id="ft-block-ab" placeholder="00:00" style="color:var(--amber)"></div>
+            <div class="ft-cell"><div class="ft-label">Block Off</div><input class="ft-input" type="text" id="ft-block-off"></div>
+            <div class="ft-cell"><div class="ft-label">Take Off</div><input class="ft-input" type="text" id="ft-takeoff"></div>
+            <div class="ft-cell"><div class="ft-label">Landing</div><input class="ft-input" type="text" id="ft-landing"></div>
+            <div class="ft-cell"><div class="ft-label">Block On</div><input class="ft-input" type="text" id="ft-block-on"></div>
+            <div class="ft-cell"><div class="ft-label">Block A/B</div><input class="ft-input" type="text" id="ft-block-ab" style="color:var(--amber)"></div>
           </div>
           <div style="border-top:1px solid var(--border);padding-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
             <div class="ft-cell"><div class="ft-label">Total Fuel Onboard</div><div class="ft-computed" id="ft-total-fuel">—</div></div>
@@ -1407,9 +1429,16 @@
       <div class="stab-panel" id="stab-airports">
         <div id="new-ap-form" style="display:none;background:var(--surface2);border:1px solid var(--amber-dim);border-radius:var(--radius);padding:18px;margin-bottom:16px">
           <div id="ap-form-title" style="font-family:var(--sans);font-weight:700;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:14px">Add Airport</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-            <div class="field"><label class="field-label">ICAO</label><input class="field-input" id="ap-icao" type="text" placeholder="ESOW" style="text-transform:uppercase"></div>
-            <div class="field"><label class="field-label">Name</label><input class="field-input" id="ap-name" type="text" placeholder="Västerås"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+            <div class="field"><label class="field-label">ICAO</label><input class="field-input" id="ap-icao" type="text" placeholder="EGLL" style="text-transform:uppercase"></div>
+            <div class="field"><label class="field-label">Name</label><input class="field-input" id="ap-name" type="text" placeholder="London Heathrow"></div>
+            <div class="field"><label class="field-label">Elevation (ft)</label><input class="field-input" id="ap-elev" type="number" placeholder="0"></div>
+            <div class="field"><label class="field-label">Display Unit</label>
+              <select class="field-input field-select" id="ap-display-unit">
+                <option value="m">Metres (m)</option>
+                <option value="ft">Feet (ft)</option>
+              </select>
+            </div>
           </div>
           <div style="font-family:var(--sans);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px">Runways</div>
           <div id="ap-runways-form"></div>
@@ -1446,13 +1475,17 @@ const state = {
     { id: 2, reg: 'N847TF',  type: 'C208B',  engine:'turboprop', bem:2145,  bemArm:122.0, mtom:3629, mlm:3629, fuelArm:128.0, cgFwd:110, cgAft:130, torque:75, tas:180, ff:170, maxItt:820, np:1900 },
   ],
   airports: [
-    { id: 1, icao:'ESOW', name:'Västerås', runways:[
-      { id:'r1', name:'01', toda:1200, lda:1100, unit:'m' },
-      { id:'r2', name:'19', toda:1200, lda:1100, unit:'m' },
+    { id: 1, icao:'EGLL', name:'London Heathrow', elevation:83, displayUnit:'m', runways:[
+      { id:'r1', name:'09L', toda:3902, lda:3660, unit:'m' },
+      { id:'r2', name:'27R', toda:3902, lda:3660, unit:'m' },
+      { id:'r3', name:'09R', toda:3660, lda:3353, unit:'m' },
+      { id:'r4', name:'27L', toda:3660, lda:3353, unit:'m' },
     ]},
-    { id: 2, icao:'ESSD', name:'Borlänge', runways:[
-      { id:'r1', name:'08', toda:1800, lda:1700, unit:'m' },
-      { id:'r2', name:'26', toda:1800, lda:1700, unit:'m' },
+    { id: 2, icao:'KJFK', name:'New York JFK', elevation:13, displayUnit:'ft', runways:[
+      { id:'r1', name:'04L', toda:8400, lda:8400, unit:'ft' },
+      { id:'r2', name:'22R', toda:8400, lda:8400, unit:'ft' },
+      { id:'r3', name:'13L', toda:14511, lda:14511, unit:'ft' },
+      { id:'r4', name:'31R', toda:14511, lda:14511, unit:'ft' },
     ]},
   ],
   selectedDepRunway: null,
@@ -1932,14 +1965,14 @@ function renderRouteTable() {
       <td class="rt-div"><input type="number" value="${dist}" step="0.5" onchange="updateLeg(${legIdx},'dist',this.value)"></td>
       <td class="computed-cell">${distTot.toFixed(1)}</td>
       <td class="rt-div computed-cell">${eteStr}</td>
-      <td><input type="text" value="${leg.eto}" placeholder="00:00" onchange="state.legs[${legIdx}].eto=this.value"></td>
-      <td><input type="text" value="${leg.ato}" placeholder="00:00" onchange="state.legs[${legIdx}].ato=this.value"></td>
-      <td><input type="text" value="${leg.dif}" placeholder="00:00" onchange="state.legs[${legIdx}].dif=this.value"></td>
-      <td><input type="text" value="${leg.reto}" placeholder="00:00" onchange="state.legs[${legIdx}].reto=this.value"></td>
+      <td><input type="text" value="${leg.eto}" onchange="state.legs[${legIdx}].eto=this.value"></td>
+      <td><input type="text" value="${leg.ato}" onchange="state.legs[${legIdx}].ato=this.value"></td>
+      <td><input type="text" value="${leg.dif}" onchange="state.legs[${legIdx}].dif=this.value"></td>
+      <td><input type="text" value="${leg.reto}" onchange="state.legs[${legIdx}].reto=this.value"></td>
       <td class="rt-div computed-cell">${fuelInt.toFixed(1)}</td>
       <td class="computed-cell">${Math.max(0, fuelRem).toFixed(1)}</td>
       <td class="computed-cell" style="color:var(--text-dim)">${minFuel.toFixed(1)}</td>
-      <td class="rt-div-right"><input type="number" value="${leg.fuelAct||''}" step="0.1" placeholder="—" onchange="state.legs[${legIdx}].fuelAct=+this.value"></td>
+      <td class="rt-div-right"><input type="number" value="${leg.fuelAct||''}" step="0.1" onchange="state.legs[${legIdx}].fuelAct=+this.value"></td>
       <td></td>`;
     tbody.appendChild(tr);
   }
@@ -2088,6 +2121,7 @@ function renderAcGrid() {
       <div class="ac-actions">
         <button class="btn-sm btn-primary" onclick="selectAcForFlight(${ac.id})">Use for Flight</button>
         <button class="btn-sm btn-ghost" onclick="editAc(${ac.id})">Edit</button>
+        <button class="btn-sm btn-ghost" onclick="duplicateAc(${ac.id})">Duplicate</button>
         <button class="btn-sm btn-danger" onclick="deleteAc(${ac.id})">Delete</button>
       </div>`;
     grid.appendChild(div);
@@ -2176,12 +2210,23 @@ function saveAircraft() {
   }
   cancelAcForm();
   renderAcGrid();
+  populateModelDropdown();
 }
 
 function deleteAc(id) {
   state.aircraft = state.aircraft.filter(a => a.id !== id);
   if (state.selectedAc === id) state.selectedAc = null;
   renderAcGrid();
+  populateModelDropdown();
+}
+
+function duplicateAc(id) {
+  const ac = state.aircraft.find(a => a.id === id);
+  if (!ac) return;
+  const copy = { ...ac, id: Date.now(), reg: ac.reg + '_CPY' };
+  state.aircraft.push(copy);
+  renderAcGrid();
+  populateModelDropdown();
 }
 
 function selectAcForFlight(id) {
@@ -2318,27 +2363,31 @@ function renderAirportGrid() {
   const grid = document.getElementById('ap-grid');
   if (!grid) return;
   grid.innerHTML = state.airports.map(ap => {
+    const dispUnit = ap.displayUnit || 'm';
     const rwyRows = ap.runways.map(rw => {
-      const toda = rw.unit === 'ft' ? rw.toda : Math.round(rw.toda * 3.28084);
-      const lda  = rw.unit === 'ft' ? rw.lda  : Math.round(rw.lda  * 3.28084);
-      const todaM = rw.unit === 'm' ? rw.toda : Math.round(rw.toda / 3.28084);
-      const ldaM  = rw.unit === 'm' ? rw.lda  : Math.round(rw.lda  / 3.28084);
+      const convert = v => rw.unit === dispUnit ? v
+        : rw.unit === 'm' ? Math.round(v * 3.28084) : Math.round(v / 3.28084);
       return `<tr>
         <td>${rw.name}</td>
-        <td>${rw.toda} ${rw.unit} <span style="color:var(--text-faint);font-size:10px">(${rw.unit==='m'?toda+' ft':todaM+' m'})</span></td>
-        <td>${rw.lda} ${rw.unit} <span style="color:var(--text-faint);font-size:10px">(${rw.unit==='m'?lda+' ft':ldaM+' m'})</span></td>
+        <td>${convert(rw.toda).toLocaleString()} ${dispUnit}</td>
+        <td>${convert(rw.lda).toLocaleString()} ${dispUnit}</td>
       </tr>`;
     }).join('');
+    const elevStr = ap.elevation != null ? `${ap.elevation} ft` : '—';
     return `<div class="ap-card">
       <div class="ap-card-header">
-        <div><span class="ap-icao">${ap.icao}</span><span class="ap-name">${ap.name}</span></div>
-        <div style="display:flex;gap:8px">
+        <div>
+          <span class="ap-icao">${ap.icao}</span>
+          <span class="ap-name">${ap.name}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text-faint);margin-left:8px">elev ${elevStr}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
           <button class="btn-sm btn-ghost" onclick="editAirport(${ap.id})">Edit</button>
           <button class="btn-sm btn-danger" onclick="deleteAirport(${ap.id})">Delete</button>
         </div>
       </div>
       <table class="ap-rwy-table">
-        <thead><tr><th>Runway</th><th>TODA</th><th>LDA</th></tr></thead>
+        <thead><tr><th>Runway</th><th>TODA (${dispUnit})</th><th>LDA (${dispUnit})</th></tr></thead>
         <tbody>${rwyRows}</tbody>
       </table>
     </div>`;
@@ -2351,6 +2400,8 @@ function showApForm() {
   document.getElementById('ap-form-title').textContent = 'Add Airport';
   document.getElementById('ap-icao').value = '';
   document.getElementById('ap-name').value = '';
+  document.getElementById('ap-elev').value = '';
+  document.getElementById('ap-display-unit').value = 'm';
   renderRunwayFields();
   document.getElementById('new-ap-form').style.display = 'block';
 }
@@ -2387,7 +2438,10 @@ function saveAirport() {
   const icao = document.getElementById('ap-icao').value.toUpperCase().trim();
   const name = document.getElementById('ap-name').value.trim();
   if (!icao) return;
-  const ap = { id: editingApId || Date.now(), icao, name, runways: apRunwayFields.map((r, i) => ({ id: 'r'+(i+1), ...r })) };
+  const elevation   = parseFloat(document.getElementById('ap-elev').value) || 0;
+  const displayUnit = document.getElementById('ap-display-unit').value || 'm';
+  const ap = { id: editingApId || Date.now(), icao, name, elevation, displayUnit,
+               runways: apRunwayFields.map((r, i) => ({ id: 'r'+(i+1), ...r })) };
   if (editingApId) {
     const idx = state.airports.findIndex(a => a.id === editingApId);
     if (idx !== -1) state.airports[idx] = ap;
@@ -2406,6 +2460,8 @@ function editAirport(id) {
   document.getElementById('ap-form-title').textContent = `Edit ${ap.icao}`;
   document.getElementById('ap-icao').value = ap.icao;
   document.getElementById('ap-name').value = ap.name;
+  document.getElementById('ap-elev').value = ap.elevation ?? '';
+  document.getElementById('ap-display-unit').value = ap.displayUnit || 'm';
   apRunwayFields = ap.runways.map(r => ({ ...r }));
   renderRunwayFields();
   document.getElementById('new-ap-form').style.display = 'block';
@@ -2420,41 +2476,69 @@ function deleteAirport(id) {
 // ─── RUNWAY DROPDOWNS ON PERFORMANCE CARDS ────────────────────────────
 function updateRunwayDropdowns() {
   ['dep','dest'].forEach(which => {
-    const icaoInput = document.getElementById(`hdr-${which === 'dep' ? 'dep' : 'dest'}`);
-    const icao = icaoInput ? icaoInput.value.toUpperCase() : '';
+    const icao = document.getElementById(`hdr-${which}`).value.toUpperCase();
     const ap = state.airports.find(a => a.icao === icao);
     const sel = document.getElementById(`rwy-${which}`);
     if (!sel) return;
     if (ap && ap.runways.length) {
-      sel.innerHTML = ap.runways.map(r => `<option value="${r.id}">${r.name} — TODA ${r.toda}${r.unit} / LDA ${r.lda}${r.unit}</option>`).join('');
-      sel.style.display = '';
+      sel.innerHTML = ap.runways.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
     } else {
-      sel.innerHTML = '<option>No runways</option>';
+      sel.innerHTML = '<option value="">—</option>';
     }
     onRunwayChange(which);
   });
 }
 
 function onRunwayChange(which) {
-  const icao = document.getElementById(`hdr-${which === 'dep' ? 'dep' : 'dest'}`).value.toUpperCase();
+  const icao = document.getElementById(`hdr-${which}`).value.toUpperCase();
   const ap = state.airports.find(a => a.icao === icao);
   const sel = document.getElementById(`rwy-${which}`);
   if (!ap || !sel) return;
   const rw = ap.runways.find(r => r.id === sel.value) || ap.runways[0];
-  if (!rw) return;
+  const dispUnit = ap.displayUnit || 'm';
 
-  const toFt = v => rw.unit === 'm' ? Math.round(v * 3.28084) : v;
-  const toM  = v => rw.unit === 'ft' ? Math.round(v / 3.28084) : v;
-  const todaFt = toFt(rw.toda), ldaFt = toFt(rw.lda);
-  const todaM  = toM(rw.toda),  ldaM  = toM(rw.lda);
+  // Convert runway value to display unit
+  const convert = (v, storedUnit) => {
+    if (storedUnit === dispUnit) return v;
+    return storedUnit === 'm' ? Math.round(v * 3.28084) : Math.round(v / 3.28084);
+  };
 
   if (which === 'dep') {
+    const todaVal = rw ? convert(rw.toda, rw.unit) : '—';
+    const elevVal = ap.elevation != null ? `${ap.elevation} ft` : '—';
     const todaEl = document.getElementById('toda');
-    if (todaEl) todaEl.textContent = `${todaFt.toLocaleString()} ft / ${todaM} m`;
+    const elevEl = document.getElementById('dep-elev');
+    const unitEl = document.getElementById('tod-unit');
+    if (todaEl) todaEl.textContent = rw ? `${todaVal.toLocaleString()} ${dispUnit}` : '—';
+    if (elevEl) elevEl.textContent = elevVal;
+    if (unitEl) unitEl.textContent = dispUnit;
   } else {
+    const ldaVal = rw ? convert(rw.lda, rw.unit) : '—';
+    const elevVal = ap.elevation != null ? `${ap.elevation} ft` : '—';
     const ldaEl = document.getElementById('lda');
-    if (ldaEl) ldaEl.textContent = `${ldaFt.toLocaleString()} ft / ${ldaM} m`;
+    const elevEl = document.getElementById('dest-elev');
+    const unitEl = document.getElementById('ld-unit');
+    if (ldaEl) ldaEl.textContent = rw ? `${ldaVal.toLocaleString()} ${dispUnit}` : '—';
+    if (elevEl) elevEl.textContent = elevVal;
+    if (unitEl) unitEl.textContent = dispUnit;
   }
+  updatePerfDerived();
+}
+
+function updatePerfDerived() {
+  // Take-off
+  const todVal  = parseFloat(document.getElementById('tod-actual')?.value) || 0;
+  const todUnit = document.getElementById('tod-unit')?.textContent || 'ft';
+  const todr    = Math.round(todVal * 1.25);
+  const todrEl  = document.getElementById('todr');
+  if (todrEl) todrEl.textContent = `${todr.toLocaleString()} ${todUnit}`;
+
+  // Landing
+  const ldVal  = parseFloat(document.getElementById('ld-actual')?.value) || 0;
+  const ldUnit = document.getElementById('ld-unit')?.textContent || 'ft';
+  const ldr    = Math.round(ldVal * 1.43);
+  const ldrEl  = document.getElementById('ldr');
+  if (ldrEl) ldrEl.textContent = `${ldr.toLocaleString()} ${ldUnit}`;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────
